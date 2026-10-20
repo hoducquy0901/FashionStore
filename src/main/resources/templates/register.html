@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Đăng ký - FashionStore</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="auth-page">
+<div class="auth-card">
+    <a th:href="@{/}" class="logo">FashionStore</a>
+    <h2>Tạo tài khoản</h2>
+
+    <form th:action="@{/register}" th:object="${registerRequest}" method="post">
+        <label for="fullname">Họ và tên</label>
+        <input type="text" id="fullname" th:field="*{fullname}">
+        <small class="error" th:if="${#fields.hasErrors('fullname')}" th:errors="*{fullname}"></small>
+
+        <label for="email">Email</label>
+        <input type="email" id="email" th:field="*{email}">
+        <small class="error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></small>
+
+        <label for="phone">Số điện thoại</label>
+        <input type="text" id="phone" th:field="*{phone}">
+        <small class="error" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></small>
+
+        <label for="password">Mật khẩu</label>
+        <div class="pw-box">
+            <input type="password" id="password" th:field="*{password}">
+            <button type="button" class="toggle-pw" data-target="password">Hiện</button>
+        </div>
+        <small class="error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></small>
+
+        <label for="confirmPassword">Xác nhận mật khẩu</label>
+        <input type="password" id="confirmPassword" th:field="*{confirmPassword}">
+        <small class="error" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></small>
+
+        <button type="submit" class="btn btn-block">Đăng ký</button>
+    </form>
+
+    <p class="switch">Đã có tài khoản? <a th:href="@{/login}">Đăng nhập</a></p>
+</div>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>
