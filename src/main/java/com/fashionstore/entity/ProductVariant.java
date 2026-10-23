@@ -1,39 +1,38 @@
 package com.fashionstore.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "PRODUCT_VARIANT")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter @Setter @NoArgsConstructor
 public class ProductVariant {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "variantId")
     private Integer variantId;
 
-    @Column(name = "productId")
-    private Integer productId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "productId")
+    private Product product;
 
-    @Column(name = "sizeId")
-    private Integer sizeId;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "sizeId")
+    private Size size;
 
-    @Column(name = "colorId")
-    private Integer colorId;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "colorId")
+    private Color color;
 
-    @Column(name = "sku")
+    @Column(name = "SKU")
     private String sku;
 
     @Column(name = "price")
-    private java.math.BigDecimal price;
+    private BigDecimal price;
 
     @Column(name = "status")
     private String status;
-
 }

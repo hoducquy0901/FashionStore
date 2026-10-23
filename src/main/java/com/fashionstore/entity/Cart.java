@@ -1,17 +1,14 @@
 package com.fashionstore.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import java.math.BigDecimal;
+import lombok.Setter;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "CART")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter @Setter @NoArgsConstructor
 public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,16 +18,23 @@ public class Cart {
     @Column(name = "userId")
     private Integer userId;
 
-    @Column(name = "sessionToken")
-    private String sessionToken;
-
     @Column(name = "status")
     private String status;
 
-    @Column(name = "createdAt")
-    private java.time.LocalDateTime createdAt;
+    @Column(name = "CreatedAt")   // đổi theo tên cột thật (createAt / CreatedAt)
+    private LocalDateTime createdAt;
 
-    @Column(name = "updatedAt")
-    private java.time.LocalDateTime updatedAt;
+    @Column(name = "UpdatedAt")   // đổi theo tên cột thật (updateAt / UpdatedAt)
+    private LocalDateTime updatedAt;
 
+    @PrePersist
+    void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = createdAt;
+    }
+
+    @PreUpdate
+    void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 }

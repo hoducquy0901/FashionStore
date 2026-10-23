@@ -1,68 +1,55 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org"
-	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>FashionStore</title>
-<link rel="stylesheet" th:href="@{/css/style.css}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>FashionStore</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
-	<header class="navbar">
-		<a th:href="@{/}" class="logo">FashionStore</a>
-		<nav class="menu">
-			<a th:href="@{/}"
-				th:classappend="${activeCategoryId == null} ? 'active'">Tất cả</a> <a
-				th:each="c : ${categories}"
-				th:href="@{/category/{id}(id=${c.categoryId})}"
-				th:text="${c.categoryName}"
-				th:classappend="${activeCategoryId == c.categoryId} ? 'active'"></a>
-		</nav>
-		<div class="auth">
-			<div th:if="${username == null}">
-				<a th:href="@{/login}" class="btn btn-outline">Đăng nhập</a> <a
-					th:href="@{/register}" class="btn">Đăng ký</a>
-			</div>
-			<div th:if="${username != null}" class="user-box">
-				<span>Xin chào, <b th:text="${username}"></b></span>
-				<form th:action="@{/logout}" method="post">
-					<button type="submit" class="btn btn-outline">Đăng xuất</button>
-				</form>
-			</div>
-		</div>
-	</header>
+<header th:replace="~{fragments/header :: navbar}"></header>
 
-	<section class="banner">
-		<h1>Phong cách của bạn, cá tính của bạn</h1>
-		<p>Khám phá bộ sưu tập thời trang mới nhất</p>
-	</section>
+<div class="flash flash-ok" th:if="${cartMessage}" th:text="${cartMessage}"></div>
+<div class="flash flash-err" th:if="${cartError}" th:text="${cartError}"></div>
 
-	<main class="container">
-		<h2 class="section-title" th:text="${title}">Sản phẩm</h2>
+<section class="banner">
+    <h1>Phong cách của bạn, cá tính của bạn</h1>
+    <p>Khám phá bộ sưu tập thời trang mới nhất</p>
+</section>
 
-		<p th:if="${#lists.isEmpty(products)}" class="empty">Chưa có sản
-			phẩm nào.</p>
+<main class="container">
+    <h2 class="section-title" th:text="${title}">Sản phẩm</h2>
+    <p th:if="${#lists.isEmpty(products)}" class="empty">Chưa có sản phẩm nào.</p>
 
-		<div class="product-grid">
-			<div class="product-card" th:each="p : ${products}">
-				<div class="product-img">
-					<img th:if="${p.mainImageUrl != null}" th:src="${p.mainImageUrl}"
-						th:alt="${p.productName}"> <span
-						th:if="${p.mainImageUrl == null}" class="no-img">Chưa có
-						ảnh</span>
-				</div>
-				<div class="product-info">
-					<h3 th:text="${p.productName}">Tên sản phẩm</h3>
-					<p class="brand" th:text="${p.brand}">Thương hiệu</p>
-					<p class="price"
-						th:text="${#numbers.formatDecimal(p.basePrice, 1, 'POINT', 0, 'COMMA')} + ' ₫'">0
-						₫</p>
-				</div>
-			</div>
-		</div>
-	</main>
+    <div class="product-grid">
+        <div class="product-card" th:each="p : ${products}">
+            <a class="product-img" th:href="@{/product/{id}(id=${p.productId})}">
+                <img th:if="${p.mainImageUrl != null}" th:src="@{${p.mainImageUrl}}" th:alt="${p.productName}">
+                <span th:if="${p.mainImageUrl == null}" class="no-img">Chưa có ảnh</span>
+            </a>
+            <div class="product-info">
+                <h3><a th:href="@{/product/{id}(id=${p.productId})}" th:text="${p.productName}">Tên sản phẩm</a></h3>
+                <p class="brand" th:text="${p.brand}">Thương hiệu</p>
+                <p class="price"
+                   th:text="${#numbers.formatDecimal(p.basePrice, 1, 'POINT', 0, 'COMMA')} + ' ₫'">0 ₫</p>
 
-	<footer class="footer">© 2026 FashionStore</footer>
-	<script th:src="@{/js/app.js}"></script>
+                <div class="card-actions">
+                    <form th:action="@{/cart/add}" method="post">
+                        <input type="hidden" name="productId" th:value="${p.productId}">
+                        <button type="submit" class="btn btn-outline btn-sm">Thêm vào giỏ</button>
+                    </form>
+                    <form th:action="@{/cart/add}" method="post">
+                        <input type="hidden" name="productId" th:value="${p.productId}">
+                        <input type="hidden" name="buyNow" value="true">
+                        <button type="submit" class="btn btn-sm">Mua ngay</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer class="footer">© 2026 FashionStore</footer>
+<script th:src="@{/js/app.js}"></script>
 </body>
 </html>

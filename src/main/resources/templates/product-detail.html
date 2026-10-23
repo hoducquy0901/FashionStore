@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${product.productName} + ' - FashionStore'">Chi tiết sản phẩm</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header th:replace="~{fragments/header :: navbar}"></header>
+
+<div class="flash flash-ok" th:if="${cartMessage}" th:text="${cartMessage}"></div>
+<div class="flash flash-err" th:if="${cartError}" th:text="${cartError}"></div>
+
+<main class="container detail">
+    <!-- Hình ảnh -->
+    <div class="detail-gallery">
+        <div class="detail-main">
+            <img id="main-img" th:if="${mainImage != null}" th:src="@{${mainImage}}" th:alt="${product.productName}">
+            <span th:if="${mainImage == null}" class="no-img">Chưa có ảnh</span>
+        </div>
+        <div class="thumbs" th:if="${#lists.size(images) > 1}">
+            <img th:each="img, st : ${images}" class="thumb" th:classappend="${st.first} ? 'active'"
+                 th:src="@{${img.imageUrl}}" th:attr="data-src=@{${img.imageUrl}}" alt="Ảnh sản phẩm">
+        </div>
+    </div>
+
+    <!-- Thông tin -->
+    <div class="detail-info">
+        <h1 th:text="${product.productName}">Tên sản phẩm</h1>
+        <p class="brand" th:text="${product.brand}">Thương hiệu</p>
+        <p class="price big">
+            <span id="price-prefix" th:if="${hasRange}">Từ </span><span id="price"
+                  th:text="${#numbers.formatDecimal(minPrice, 1, 'POINT', 0, 'COMMA')} + ' ₫'">0 ₫</span>
+        </p>
+        <p class="desc" th:text="${product.description}"></p>
+
+        <p th:if="${#lists.isEmpty(variants)}" class="empty">Sản phẩm tạm thời hết hàng.</p>
+
+        <form id="add-form" th:action="@{/cart/add}" method="post" th:unless="${#lists.isEmpty(variants)}">
+            <input type="hidden" name="productId" th:value="${product.productId}">
+            <input type="hidden" name="variantId" id="variantId">
+
+            <div class="option-group" th:if="${!#lists.isEmpty(colors)}">
+                <label>Màu sắc: <b id="color-name">—</b></label>
+                <div class="options">
+                    <button type="button" class="color-btn" th:each="c : ${colors}"
+                            th:attr="data-id=${c.colorId},data-name=${c.colorName}"
+                            th:title="${c.colorName}"
+                            th:style="'background-color:' + ${c.colorHex}"></button>
+                </div>
+            </div>
+
+            <div class="option-group" th:if="${!#lists.isEmpty(sizes)}">
+                <label>Kích thước: <b id="size-name">—</b></label>
+                <div class="options">
+                    <button type="button" class="size-btn" th:each="s : ${sizes}"
+                            th:attr="data-id=${s.sizeId},data-name=${s.sizeName}"
+                            th:text="${s.sizeName}"></button>
+                </div>
+            </div>
+
+            <div class="option-group">
+                <label>Số lượng</label>
+                <div class="qty">
+                    <button type="button" id="qty-minus">−</button>
+                    <input type="number" name="quantity" id="qty" value="1" min="1" max="99">
+                    <button type="button" id="qty-plus">+</button>
+                </div>
+            </div>
+
+            <p class="select-msg" id="select-msg"></p>
+
+            <div class="detail-actions">
+                <button type="submit" name="buyNow" value="false" class="btn btn-outline btn-lg">Thêm vào giỏ hàng</button>
+                <button type="submit" name="buyNow" value="true" class="btn btn-lg">Mua ngay</button>
+            </div>
+        </form>
+
+        <!-- Dữ liệu biến thể cho JavaScript -->
+        <div id="variant-data" hidden>
+            <i th:each="v : ${variants}"
+               th:attr="data-id=${v.variantId},data-color=${v.color?.colorId},data-size=${v.size?.sizeId},data-price=${v.price}"></i>
+        </div>
+    </div>
+</main>
+
+<footer class="footer">© 2026 FashionStore</footer>
+<script th:src="@{/js/product-detail.js}"></script>
+</body>
+</html>

@@ -25,4 +25,7 @@ public class ProductImage {
 
     @Column(name = "isMain")
     private Boolean main;
+    
+    @Column(name = "variantId")
+    private Integer variantId;
 }

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Giỏ hàng - FashionStore</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header th:replace="~{fragments/header :: navbar}"></header>
+
+<div class="flash flash-ok" th:if="${cartMessage}" th:text="${cartMessage}"></div>
+<div class="flash flash-err" th:if="${cartError}" th:text="${cartError}"></div>
+
+<main class="container">
+    <h2 class="section-title">Giỏ hàng của bạn</h2>
+
+    <p th:if="${#lists.isEmpty(items)}" class="empty">
+        Giỏ hàng đang trống. <a th:href="@{/}" class="link">Tiếp tục mua sắm</a>
+    </p>
+
+    <div th:unless="${#lists.isEmpty(items)}">
+        <div class="table-wrap">
+            <table class="cart-table">
+                <thead>
+                <tr><th>Sản phẩm</th><th>Đơn giá</th><th>Số lượng</th><th>Thành tiền</th><th></th></tr>
+                </thead>
+                <tbody>
+                <tr th:each="it : ${items}">
+                    <td>
+                        <div class="cart-product">
+                            <img th:if="${it.variant.product.mainImageUrl != null}"
+                                 th:src="@{${it.variant.product.mainImageUrl}}" alt="">
+                            <div>
+                                <a th:href="@{/product/{id}(id=${it.variant.product.productId})}"
+                                   th:text="${it.variant.product.productName}">Tên</a>
+                                <small>
+                                    Màu: <span th:text="${it.variant.color?.colorName}">-</span> ·
+                                    Size: <span th:text="${it.variant.size?.sizeName}">-</span>
+                                </small>
+                            </div>
+                        </div>
+                    </td>
+                    <td th:text="${#numbers.formatDecimal(it.variant.price, 1, 'POINT', 0, 'COMMA')} + ' ₫'">0 ₫</td>
+                    <td>
+                        <form th:action="@{/cart/update}" method="post">
+                            <input type="hidden" name="cartItemId" th:value="${it.cartItemId}">
+                            <input type="number" name="quantity" class="qty-input" min="0" max="99"
+                                   th:value="${it.quantity}" onchange="this.form.submit()">
+                        </form>
+                    </td>
+                    <td class="line-total"
+                        th:text="${#numbers.formatDecimal(it.lineTotal, 1, 'POINT', 0, 'COMMA')} + ' ₫'">0 ₫</td>
+                    <td>
+                        <form th:action="@{/cart/remove}" method="post">
+                            <input type="hidden" name="cartItemId" th:value="${it.cartItemId}">
+                            <button type="submit" class="link-danger">Xóa</button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="cart-summary">
+            <a th:href="@{/}" class="btn btn-outline">Tiếp tục mua sắm</a>
+            <div class="cart-total">Tổng cộng:
+                <span th:text="${#numbers.formatDecimal(total, 1, 'POINT', 0, 'COMMA')} + ' ₫'">0 ₫</span>
+            </div>
+            <button type="button" class="btn btn-lg" disabled title="Chức năng thanh toán sẽ làm ở bước sau">Thanh toán</button>
+        </div>
+    </div>
+</main>
+
+<footer class="footer">© 2026 FashionStore</footer>
+</body>
+</html>

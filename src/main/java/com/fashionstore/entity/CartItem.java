@@ -1,30 +1,33 @@
 package com.fashionstore.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "CART_ITEM")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter @Setter @NoArgsConstructor
 public class CartItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "cartItemId")
     private Integer cartItemId;
 
-    @Column(name = "cartId")
-    private Integer cartId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cartId")
+    private Cart cart;
 
-    @Column(name = "variantId")
-    private Integer variantId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "variantId")
+    private ProductVariant variant;
 
     @Column(name = "quantity")
     private Integer quantity;
 
+    /** Thành tiền = đơn giá x số lượng (không lưu DB) */
+    public BigDecimal getLineTotal() {
+        return variant.getPrice().multiply(BigDecimal.valueOf(quantity));
+    }
 }
