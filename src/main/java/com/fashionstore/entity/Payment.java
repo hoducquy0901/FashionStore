@@ -1,17 +1,15 @@
 package com.fashionstore.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "PAYMENT")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter @Setter @NoArgsConstructor
 public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,12 +26,11 @@ public class Payment {
     private String paymentStatus;
 
     @Column(name = "amount")
-    private java.math.BigDecimal amount;
+    private BigDecimal amount;
 
     @Column(name = "transactionCode")
     private String transactionCode;
 
     @Column(name = "paidAt")
-    private java.time.LocalDateTime paidAt;
-
+    private LocalDateTime paidAt;
 }

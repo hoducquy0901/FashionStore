@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="'Đơn hàng ' + ${order.orderCode}">Chi tiết đơn hàng</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header th:replace="~{fragments/header :: navbar}"></header>
+
+<div class="flash flash-ok" th:if="${orderMessage}" th:text="${orderMessage}"></div>
+
+<main class="container">
+    <h2 class="section-title">Đơn hàng <span th:text="${order.orderCode}">FS...</span></h2>
+
+    <div class="order-grid">
+        <section class="box">
+            <h3>Thông tin đơn hàng</h3>
+            <p>Ngày đặt: <b th:text="${order.createdAtText}"></b></p>
+            <p>Trạng thái: <span class="tag" th:text="${orderStatusLabels.get(order.orderStatus)}"></span></p>
+            <p th:if="${address != null}">
+                Giao đến: <b th:text="${address.receiverName}"></b> · <span th:text="${address.phone}"></span><br>
+                <small th:text="${address.addressDetail + ', ' + address.ward + ', ' + address.district + ', ' + address.province}"></small>
+            </p>
+        </section>
+
+        <section class="box" th:if="${payment != null}">
+            <h3>Thanh toán</h3>
+            <p>Phương thức: <b th:text="${paymentMethodLabels.get(payment.paymentMethod)}"></b></p>
+            <p>Trạng thái: <span class="tag" th:text="${paymentStatusLabels.get(payment.paymentStatus)}"></span></p>
+
+            <div class="bank-box" th:if="${payment.paymentMethod == 'BANK_TRANSFER' and payment.paymentStatus != 'SUCCESS'}">
+                <p><b>Vui lòng chuyển khoản theo thông tin sau:</b></p>
+                <p>Ngân hàng: <b th:text="${bankName}"></b></p>
+                <p>Số tài khoản: <b th:text="${bankAccount}"></b></p>
+                <p>Chủ tài khoản: <b th:text="${bankOwner}"></b></p>
+                <p>Số tiền: <b th:text="${#numbers.formatDecimal(payment.amount, 1, 'POINT', 0, 'COMMA')} + ' ₫'"></b></p>
+                <p>Nội dung chuyển khoản: <b th:text="${order.orderCode}"></b></p>
+                <small>Đơn hàng sẽ được xác nhận sau khi shop nhận được tiền.</small>
+            </div>
+        </section>
+    </div>
+
+    <div class="table-wrap">
+        <table class="cart-table">
+            <thead>
+            <tr><th>Sản phẩm</th><th>Đơn giá</th><th>Số lượng</th><th>Thành tiền</th></tr>
+            </thead>
+            <tbody>
+            <tr th:each="d : ${details}">
+                <td>
+                    <b th:text="${d.variant.product.productName}">Tên</b><br>
+                    <small>
+                        Màu: <span th:text="${d.variant.color?.colorName}">-</span> ·
+                        Size: <span th:text="${d.variant.size?.sizeName}">-</span>
+                    </small>
+                </td>
+                <td th:text="${#numbers.formatDecimal(d.unitPrice, 1, 'POINT', 0, 'COMMA')} + ' ₫'">0 ₫</td>
+                <td th:text="${d.quantity}">1</td>
+                <td class="line-total" th:text="${#numbers.formatDecimal(d.subTotal, 1, 'POINT', 0, 'COMMA')} + ' ₫'">0 ₫</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="order-total box">
+        <div class="sum-row"><span>Tạm tính</span>
+            <span th:text="${#numbers.formatDecimal(order.totalAmount, 1, 'POINT', 0, 'COMMA')} + ' ₫'"></span></div>
+        <div class="sum-row"><span>Phí vận chuyển</span>
+            <span th:text="${#numbers.formatDecimal(order.shippingFee, 1, 'POINT', 0, 'COMMA')} + ' ₫'"></span></div>
+        <div class="sum-row sum-total"><span>Tổng cộng</span>
+            <span th:text="${#numbers.formatDecimal(order.finalAmount, 1, 'POINT', 0, 'COMMA')} + ' ₫'"></span></div>
+    </div>
+
+    <p style="margin-top:20px">
+        <a th:href="@{/orders}" class="btn btn-outline">← Danh sách đơn hàng</a>
+        <a th:href="@{/}" class="btn">Tiếp tục mua sắm</a>
+    </p>
+</main>
+
+<footer class="footer">© 2026 FashionStore</footer>
+</body>
+</html>

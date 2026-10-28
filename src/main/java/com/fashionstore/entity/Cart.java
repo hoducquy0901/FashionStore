@@ -21,10 +21,10 @@ public class Cart {
     @Column(name = "status")
     private String status;
 
-    @Column(name = "CreatedAt")   // đổi theo tên cột thật (createAt / CreatedAt)
+    @Column(name = "createAt")
     private LocalDateTime createdAt;
 
-    @Column(name = "UpdatedAt")   // đổi theo tên cột thật (updateAt / UpdatedAt)
+    @Column(name = "updateAt")
     private LocalDateTime updatedAt;
 
     @PrePersist

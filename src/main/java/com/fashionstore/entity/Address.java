@@ -1,17 +1,13 @@
 package com.fashionstore.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import lombok.Setter;
 
 @Entity
 @Table(name = "ADDRESS")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter @Setter @NoArgsConstructor
 public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,7 +20,7 @@ public class Address {
     @Column(name = "receiverName")
     private String receiverName;
 
-    @Column(name = "phone")
+    @Column(name = "Phone")
     private String phone;
 
     @Column(name = "province")
@@ -40,6 +36,5 @@ public class Address {
     private String addressDetail;
 
     @Column(name = "isDefault")
-    private Boolean isDefault;
-
+    private Boolean defaultAddress;
 }

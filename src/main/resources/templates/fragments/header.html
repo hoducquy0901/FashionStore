@@ -1,36 +1,42 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
-<header th:fragment="navbar" class="navbar">
-    <a th:href="@{/}" class="logo">FashionStore</a>
-    <nav class="menu">
-        <a th:href="@{/}" th:classappend="${activeCategoryId == null} ? 'active'">Tất cả</a>
-        <a th:each="c : ${categories}" th:href="@{/category/{id}(id=${c.categoryId})}"
-           th:text="${c.categoryName}"
-           th:classappend="${activeCategoryId == c.categoryId} ? 'active'"></a>
-    </nav>
+	<header th:fragment="navbar" class="navbar">
+		<a th:href="@{/}" class="logo">FashionStore</a>
+		<nav class="menu">
+			<a th:href="@{/}"
+				th:classappend="${activeCategoryId == null} ? 'active'">Tất cả</a> <a
+				th:each="c : ${categories}"
+				th:href="@{/category/{id}(id=${c.categoryId})}"
+				th:text="${c.categoryName}"
+				th:classappend="${activeCategoryId == c.categoryId} ? 'active'"></a>
+		</nav>
 
-    <a th:href="@{/cart}" class="cart-link" title="Giỏ hàng" aria-label="Giỏ hàng">
-        <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor"
-             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/>
-            <path d="M2 3h3l2.7 12.4a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.5L21 7H6"/>
-        </svg>
-        <span class="cart-badge" th:if="${cartCount != null and cartCount > 0}" th:text="${cartCount}">0</span>
-    </a>
+		<a th:href="@{/cart}" class="cart-link" title="Giỏ hàng"
+			aria-label="Giỏ hàng"> <svg viewBox="0 0 24 24" width="26"
+				height="26" fill="none" stroke="currentColor" stroke-width="2"
+				stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="9" cy="20" r="1.5" />
+				<circle cx="18" cy="20" r="1.5" />
+            <path
+					d="M2 3h3l2.7 12.4a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.5L21 7H6" />
+        </svg> <span class="cart-badge"
+			th:if="${cartCount != null and cartCount > 0}" th:text="${cartCount}">0</span>
+		</a>
 
-    <div class="auth">
-        <div th:if="${username == null}">
-            <a th:href="@{/login}" class="btn btn-outline">Đăng nhập</a>
-            <a th:href="@{/register}" class="btn">Đăng ký</a>
-        </div>
-        <div th:if="${username != null}" class="user-box">
-            <span>Xin chào, <b th:text="${username}"></b></span>
-            <form th:action="@{/logout}" method="post">
-                <button type="submit" class="btn btn-outline">Đăng xuất</button>
-            </form>
-        </div>
-    </div>
-</header>
+		<div class="auth">
+			<div th:if="${username == null}">
+				<a th:href="@{/login}" class="btn btn-outline">Đăng nhập</a> <a
+					th:href="@{/register}" class="btn">Đăng ký</a>
+			</div>
+			<div th:if="${username != null}" class="user-box">
+				<span>Xin chào, <b th:text="${username}"></b></span> <a
+					th:href="@{/orders}" class="btn btn-outline">Đơn hàng</a>
+				<form th:action="@{/logout}" method="post">
+					<button type="submit" class="btn btn-outline">Đăng xuất</button>
+				</form>
+			</div>
+		</div>
+	</header>
 </body>
 </html>

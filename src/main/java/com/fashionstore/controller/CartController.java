@@ -58,7 +58,7 @@ public class CartController {
             return "redirect:" + backUrl(referer);
         }
         if (buyNow) {
-            return "redirect:/cart";
+            return "redirect:/checkout";
         }
         redirect.addFlashAttribute("cartMessage", "Đã thêm sản phẩm vào giỏ hàng");
         return "redirect:" + backUrl(referer);

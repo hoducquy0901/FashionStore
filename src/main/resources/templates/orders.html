@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Đơn hàng của tôi - FashionStore</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header th:replace="~{fragments/header :: navbar}"></header>
+
+<main class="container">
+    <h2 class="section-title">Đơn hàng của tôi</h2>
+
+    <p th:if="${#lists.isEmpty(orders)}" class="empty">
+        Bạn chưa có đơn hàng nào. <a th:href="@{/}" class="link">Mua sắm ngay</a>
+    </p>
+
+    <div class="table-wrap" th:unless="${#lists.isEmpty(orders)}">
+        <table class="cart-table">
+            <thead>
+            <tr><th>Mã đơn</th><th>Ngày đặt</th><th>Tổng tiền</th><th>Trạng thái</th><th></th></tr>
+            </thead>
+            <tbody>
+            <tr th:each="o : ${orders}">
+                <td><b th:text="${o.orderCode}">FS...</b></td>
+                <td th:text="${o.createdAtText}">01/01/2026</td>
+                <td class="line-total" th:text="${#numbers.formatDecimal(o.finalAmount, 1, 'POINT', 0, 'COMMA')} + ' ₫'">0 ₫</td>
+                <td><span class="tag" th:text="${orderStatusLabels.get(o.orderStatus)}">Trạng thái</span></td>
+                <td><a th:href="@{/orders/{code}(code=${o.orderCode})}" class="link">Xem chi tiết</a></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<footer class="footer">© 2026 FashionStore</footer>
+</body>
+</html>

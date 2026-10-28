@@ -1,17 +1,14 @@
 package com.fashionstore.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import java.math.BigDecimal;
+import lombok.Setter;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "ORDER_STATUS_HISTORY")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter @Setter @NoArgsConstructor
 public class OrderStatusHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,8 +18,8 @@ public class OrderStatusHistory {
     @Column(name = "orderId")
     private Integer orderId;
 
-    @Column(name = "updatedBy")
-    private Integer updatedBy;
+    @Column(name = "updateBy")
+    private Integer updateBy;
 
     @Column(name = "status")
     private String status;
@@ -30,7 +27,11 @@ public class OrderStatusHistory {
     @Column(name = "note")
     private String note;
 
-    @Column(name = "createdAt")
-    private java.time.LocalDateTime createdAt;
+    @Column(name = "createAt")
+    private LocalDateTime createdAt;
 
+    @PrePersist
+    void onCreate() {
+        if (createdAt == null) createdAt = LocalDateTime.now();
+    }
 }

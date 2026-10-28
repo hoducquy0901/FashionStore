@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Thanh toán - FashionStore</title>
+<link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+	<header th:replace="~{fragments/header :: navbar}"></header>
+
+	<div class="flash flash-err" th:if="${orderError}"
+		th:text="${orderError}"></div>
+
+	<main class="container">
+		<h2 class="section-title">Thanh toán</h2>
+
+		<form th:action="@{/checkout}" th:object="${form}" method="post"
+			class="checkout">
+			<div class="checkout-left">
+
+				<section class="box">
+					<div class="box-head">
+						<h3>1. Địa chỉ nhận hàng</h3>
+						<button type="button" id="fill-profile"
+							class="btn btn-outline btn-sm"
+							th:if="${profileName != null or profilePhone != null}"
+							th:attr="data-name=${profileName},data-phone=${profilePhone}">
+							Điền thông tin tài khoản</button>
+					</div>
+
+					<label class="radio-row" th:each="a : ${addresses}"> <input
+						type="radio" name="addressId" class="addr-radio"
+						th:value="${a.addressId}"
+						th:checked="${form.addressId == a.addressId}"> <span>
+							<b th:text="${a.receiverName}">Tên</b> · <span
+							th:text="${a.phone}">SĐT</span> <span class="tag"
+							th:if="${a.defaultAddress}">Mặc định</span><br> <small
+							th:text="${a.addressDetail + ', ' + a.ward + ', ' + a.district + ', ' + a.province}">Địa
+								chỉ</small>
+					</span>
+					</label> <label class="radio-row"> <input type="radio"
+						name="addressId" class="addr-radio" value=""
+						th:checked="${form.addressId == null}"> <span><b>Dùng
+								địa chỉ mới</b></span>
+					</label>
+
+					<div id="new-address" class="new-address"
+						th:classappend="${form.addressId != null} ? 'hidden'">
+						<label>Họ tên người nhận</label> <input type="text"
+							th:field="*{receiverName}"> <small class="error"
+							th:if="${#fields.hasErrors('receiverName')}"
+							th:errors="*{receiverName}"></small> <label>Số điện thoại</label>
+						<input type="text" th:field="*{phone}"> <small
+							class="error" th:if="${#fields.hasErrors('phone')}"
+							th:errors="*{phone}"></small> <label>Tỉnh / Thành phố</label> <input
+							type="text" th:field="*{province}"> <small class="error"
+							th:if="${#fields.hasErrors('province')}" th:errors="*{province}"></small>
+
+						<label>Quận / Huyện</label> <input type="text"
+							th:field="*{district}"> <small class="error"
+							th:if="${#fields.hasErrors('district')}" th:errors="*{district}"></small>
+
+						<label>Phường / Xã</label> <input type="text" th:field="*{ward}">
+						<small class="error" th:if="${#fields.hasErrors('ward')}"
+							th:errors="*{ward}"></small> <label>Số nhà, tên đường</label> <input
+							type="text" th:field="*{addressDetail}"> <small
+							class="error" th:if="${#fields.hasErrors('addressDetail')}"
+							th:errors="*{addressDetail}"></small>
+					</div>
+				</section>
+
+				<section class="box">
+					<h3>2. Phương thức thanh toán</h3>
+					<label class="radio-row"> <input type="radio"
+						name="paymentMethod" value="COD"
+						th:checked="${form.paymentMethod == 'COD'}"> <span><b>Thanh
+								toán khi nhận hàng (COD)</b></span>
+					</label> <label class="radio-row"> <input type="radio"
+						name="paymentMethod" value="BANK_TRANSFER"
+						th:checked="${form.paymentMethod == 'BANK_TRANSFER'}"> <span><b>Chuyển
+								khoản ngân hàng</b><br> <small>Thông tin chuyển khoản
+								sẽ hiển thị sau khi đặt hàng</small></span>
+					</label> <small class="error" th:if="${#fields.hasErrors('paymentMethod')}"
+						th:errors="*{paymentMethod}"></small>
+				</section>
+
+				<section class="box">
+					<h3>3. Ghi chú cho đơn hàng</h3>
+					<textarea th:field="*{note}" rows="3" maxlength="200"
+						placeholder="Ví dụ: giao giờ hành chính"></textarea>
+				</section>
+			</div>
+
+			<aside class="checkout-right box">
+				<h3>Đơn hàng của bạn</h3>
+				<ul class="sum-list">
+					<li th:each="it : ${items}">
+						<div>
+							<b th:text="${it.variant.product.productName}">Tên</b><br> <small>
+								<span th:text="${it.variant.color?.colorName}">Màu</span> / <span
+								th:text="${it.variant.size?.sizeName}">Size</span> × <span
+								th:text="${it.quantity}">1</span>
+							</small>
+						</div> <span
+						th:text="${#numbers.formatDecimal(it.lineTotal, 1, 'POINT', 0, 'COMMA')} + ' ₫'">0
+							₫</span>
+					</li>
+				</ul>
+				<div class="sum-row">
+					<span>Tạm tính</span> <span
+						th:text="${#numbers.formatDecimal(total, 1, 'POINT', 0, 'COMMA')} + ' ₫'">0
+						₫</span>
+				</div>
+				<div class="sum-row">
+					<span>Phí vận chuyển</span> <span
+						th:text="${shippingFee.signum() == 0} ? 'Miễn phí' : ${#numbers.formatDecimal(shippingFee, 1, 'POINT', 0, 'COMMA')} + ' ₫'">0
+						₫</span>
+				</div>
+				<div class="sum-row sum-total">
+					<span>Tổng cộng</span> <span
+						th:text="${#numbers.formatDecimal(finalAmount, 1, 'POINT', 0, 'COMMA')} + ' ₫'">0
+						₫</span>
+				</div>
+
+				<button type="submit" class="btn btn-block btn-lg">Đặt hàng</button>
+				<a th:href="@{/cart}" class="back-link">← Quay lại giỏ hàng</a>
+			</aside>
+		</form>
+	</main>
+
+	<footer class="footer">© 2026 FashionStore</footer>
+	<script th:src="@{/js/checkout.js}"></script>
+</body>
+</html>

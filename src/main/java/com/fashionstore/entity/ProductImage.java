@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "Product_Image")      // sửa nếu bảng thật tên khác
+@Table(name = "Product_Image")      
 @Getter
 @Setter
 @NoArgsConstructor

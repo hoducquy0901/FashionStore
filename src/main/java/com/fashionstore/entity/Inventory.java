@@ -1,17 +1,13 @@
 package com.fashionstore.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import lombok.Setter;
 
 @Entity
 @Table(name = "INVENTORY")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter @Setter @NoArgsConstructor
 public class Inventory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,16 +17,9 @@ public class Inventory {
     @Column(name = "variantId")
     private Integer variantId;
 
-    @Column(name = "inventoryLocation")
-    private String inventoryLocation;
-
     @Column(name = "quantity")
     private Integer quantity;
 
     @Column(name = "reservedQuantity")
     private Integer reservedQuantity;
-
-    @Column(name = "updatedAt")
-    private java.time.LocalDateTime updatedAt;
-
 }

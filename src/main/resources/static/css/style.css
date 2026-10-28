@@ -585,3 +585,152 @@ a {
 		grid-template-columns: 1fr;
 	}
 }
+/* Checkout */
+.hidden {
+	display: none;
+}
+
+.checkout {
+	display: grid;
+	grid-template-columns: 1.4fr 1fr;
+	gap: 24px;
+	align-items: start;
+}
+
+.box {
+	background: #fff;
+	border-radius: 10px;
+	padding: 20px;
+	margin-bottom: 20px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, .06);
+}
+
+.box h3 {
+	margin-bottom: 14px;
+}
+
+.radio-row {
+	display: flex;
+	gap: 12px;
+	align-items: flex-start;
+	padding: 12px;
+	border: 1px solid #e5e5e5;
+	border-radius: 8px;
+	margin-bottom: 10px;
+	cursor: pointer;
+}
+
+.radio-row input {
+	margin-top: 4px;
+}
+
+.new-address label {
+	display: block;
+	margin: 10px 0 4px;
+	font-size: 14px;
+	font-weight: 600;
+}
+
+.new-address input, .box textarea {
+	width: 100%;
+	padding: 10px 12px;
+	border: 1px solid #ccc;
+	border-radius: 6px;
+	font-size: 14px;
+	font-family: inherit;
+}
+
+.tag {
+	display: inline-block;
+	padding: 2px 8px;
+	border-radius: 10px;
+	background: #eee;
+	font-size: 12px;
+	margin-left: 6px;
+}
+
+.sum-list {
+	list-style: none;
+	margin-bottom: 14px;
+}
+
+.sum-list li {
+	display: flex;
+	justify-content: space-between;
+	gap: 12px;
+	padding: 10px 0;
+	border-bottom: 1px solid #eee;
+}
+
+.sum-row {
+	display: flex;
+	justify-content: space-between;
+	padding: 8px 0;
+}
+
+.sum-total {
+	font-size: 18px;
+	font-weight: 700;
+	border-top: 1px solid #eee;
+	margin-top: 6px;
+	padding-top: 12px;
+}
+
+.sum-total span:last-child {
+	color: #c0392b;
+}
+
+.back-link {
+	display: block;
+	text-align: center;
+	margin-top: 12px;
+	font-size: 14px;
+	color: #555;
+}
+
+.checkout-right .btn-block {
+	margin-top: 16px;
+}
+
+/* Order detail */
+.order-grid {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 20px;
+}
+
+.bank-box {
+	margin-top: 12px;
+	padding: 12px;
+	background: #fff8e1;
+	border-radius: 8px;
+	line-height: 1.7;
+}
+
+.order-total {
+	max-width: 380px;
+	margin: 20px 0 0 auto;
+}
+
+@media ( max-width : 800px) {
+	.checkout, .order-grid {
+		grid-template-columns: 1fr;
+	}
+}
+
+.box-head {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 12px;
+	margin-bottom: 14px;
+}
+
+.box-head h3 {
+	margin: 0;
+}
+
+.box-head .btn-sm {
+	width: auto;
+	white-space: nowrap;
+}
