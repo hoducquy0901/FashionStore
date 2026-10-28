@@ -22,19 +22,19 @@ public class Cart {
     private String status;
 
     @Column(name = "createAt")
-    private LocalDateTime createdAt;
+    private LocalDateTime createAt;
 
     @Column(name = "updateAt")
-    private LocalDateTime updatedAt;
+    private LocalDateTime updateAt;
 
     @PrePersist
     void onCreate() {
-        createdAt = LocalDateTime.now();
-        updatedAt = createdAt;
+        createAt = LocalDateTime.now();
+        updateAt = createAt;
     }
 
     @PreUpdate
     void onUpdate() {
-        updatedAt = LocalDateTime.now();
+        updateAt = LocalDateTime.now();
     }
 }

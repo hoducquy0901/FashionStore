@@ -35,11 +35,11 @@ public class User {
     @Column(name = "status")
     private String status;
 
-    @Column(name = "createdAt")
-    private java.time.LocalDateTime createdAt;
+    @Column(name = "createAt")
+    private java.time.LocalDateTime createAt;
     @PrePersist
     void onCreate() {
-        if (createdAt == null) createdAt = LocalDateTime.now();
+        if (createAt == null) createAt = LocalDateTime.now();
     }
 }
 
