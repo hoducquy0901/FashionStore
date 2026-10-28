@@ -734,3 +734,40 @@ a {
 	width: auto;
 	white-space: nowrap;
 }
+
+.result-box {
+	max-width: 520px;
+	margin: 30px auto;
+	text-align: center;
+}
+
+.result-box p {
+	margin: 8px 0;
+	color: #444;
+}
+
+.result-icon {
+	width: 64px;
+	height: 64px;
+	line-height: 64px;
+	margin: 0 auto 14px;
+	border-radius: 50%;
+	font-size: 30px;
+	color: #fff;
+}
+
+.result-icon.ok {
+	background: #2e7d32;
+}
+
+.result-icon.fail {
+	background: #c0392b;
+}
+
+.result-actions {
+	display: flex;
+	gap: 10px;
+	justify-content: center;
+	flex-wrap: wrap;
+	margin-top: 18px;
+}

@@ -21,8 +21,11 @@ public class OrderController {
 	private static final Map<String, String> ORDER_STATUS = Map.of("PENDING", "Chờ xác nhận", "CONFIRMED",
 			"Đã xác nhận", "PREPARING", "Đang chuẩn bị hàng", "SHIPPING", "Đang giao", "COMPLETED", "Hoàn thành",
 			"CANCELLED", "Đã hủy", "RETURNED", "Đã trả hàng");
-	private static final Map<String, String> PAYMENT_METHOD = Map.of("COD", "Thanh toán khi nhận hàng (COD)",
-			"BANK_TRANSFER", "Chuyển khoản ngân hàng", "CREDIT_CARD", "Thẻ tín dụng", "E_WALLET", "Ví điện tử");
+	private static final Map<String, String> PAYMENT_METHOD = Map.of(
+	        "COD", "Thanh toán khi nhận hàng (COD)",
+	        "BANK_TRANSFER", "Chuyển khoản ngân hàng",
+	        "E_WALLET", "Thanh toán online (VNPay)",
+	        "CREDIT_CARD", "Thẻ tín dụng");
 	private static final Map<String, String> PAYMENT_STATUS = Map.of("PENDING", "Chờ thanh toán", "SUCCESS",
 			"Đã thanh toán", "FAILED", "Thanh toán thất bại", "REFUNDED", "Đã hoàn tiền");
 

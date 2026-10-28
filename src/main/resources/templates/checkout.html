@@ -81,6 +81,11 @@
 						th:checked="${form.paymentMethod == 'BANK_TRANSFER'}"> <span><b>Chuyển
 								khoản ngân hàng</b><br> <small>Thông tin chuyển khoản
 								sẽ hiển thị sau khi đặt hàng</small></span>
+					</label><label class="radio-row"> <input type="radio"
+						name="paymentMethod" value="E_WALLET"
+						th:checked="${form.paymentMethod == 'E_WALLET'}"> <span><b>Thanh
+								toán online qua VNPay</b><br> <small>Thẻ ATM nội địa,
+								thẻ quốc tế, QR ngân hàng</small></span>
 					</label> <small class="error" th:if="${#fields.hasErrors('paymentMethod')}"
 						th:errors="*{paymentMethod}"></small>
 				</section>

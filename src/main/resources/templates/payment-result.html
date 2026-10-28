@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Kết quả thanh toán - FashionStore</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header th:replace="~{fragments/header :: navbar}"></header>
+
+<main class="container">
+    <div class="box result-box">
+        <div class="result-icon ok" th:if="${status == 'SUCCESS'}">✔</div>
+        <div class="result-icon fail" th:if="${status != 'SUCCESS'}">✖</div>
+
+        <h2 th:text="${status == 'SUCCESS'} ? 'Thanh toán thành công' : 'Thanh toán chưa hoàn tất'">Kết quả</h2>
+        <p th:text="${message}">Thông báo</p>
+
+        <p th:if="${orderCode != null}">Mã đơn hàng: <b th:text="${orderCode}"></b></p>
+        <p th:if="${amount != null}">Số tiền: <b th:text="${#numbers.formatDecimal(amount, 1, 'POINT', 0, 'COMMA')} + ' ₫'"></b></p>
+
+        <div class="result-actions">
+            <a th:if="${orderCode != null}" th:href="@{/orders/{code}(code=${orderCode})}" class="btn">Xem đơn hàng</a>
+            <a th:if="${status == 'FAILED'}" th:href="@{/payment/vnpay/pay/{code}(code=${orderCode})}"
+               class="btn btn-outline">Thanh toán lại</a>
+            <a th:href="@{/}" class="btn btn-outline">Về trang chủ</a>
+        </div>
+    </div>
+</main>
+
+<footer class="footer">© 2026 FashionStore</footer>
+</body>
+</html>
