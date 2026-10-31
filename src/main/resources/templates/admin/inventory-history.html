@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Lịch sử kho - Quản trị</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header th:replace="~{fragments/header :: navbar}"></header>
+<div th:replace="~{fragments/admin-nav :: nav('inventory')}"></div>
+
+<main class="container">
+    <h2 class="section-title">Lịch sử xuất nhập kho</h2>
+
+    <section class="box">
+        <b th:text="${inventory.variant.product.productName}">Tên</b><br>
+        <small>Màu: <span th:text="${inventory.variant.color?.colorName}">-</span> ·
+            Size: <span th:text="${inventory.variant.size?.sizeName}">-</span> ·
+            SKU: <span th:text="${inventory.variant.sku}">-</span></small>
+        <p style="margin-top:10px">
+            Tồn thực: <b th:text="${inventory.quantity}">0</b> ·
+            Giữ chỗ: <b th:text="${inventory.reservedQuantity}">0</b> ·
+            Có thể bán: <b th:text="${inventory.available}">0</b>
+        </p>
+    </section>
+
+    <p th:if="${#lists.isEmpty(transactions)}" class="empty">Chưa có giao dịch nào được ghi nhận.</p>
+
+    <div class="table-wrap" th:unless="${#lists.isEmpty(transactions)}">
+        <table class="cart-table">
+            <thead><tr><th>Thời gian</th><th>Loại</th><th>Số lượng</th><th>Ghi chú</th><th>Người thực hiện</th></tr></thead>
+            <tbody>
+            <tr th:each="t : ${transactions}">
+                <td th:text="${t.createAtText}"></td>
+                <td th:text="${txLabels.get(t.transactionType)}"></td>
+                <td><b th:text="${t.signedQuantityText}"></b></td>
+                <td th:text="${t.displayNote}"></td>
+                <td th:text="${userNames.get(t.userId)}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <p><small>Hiển thị tối đa 100 giao dịch gần nhất.</small></p>
+
+    <p style="margin-top:20px"><a th:href="@{/admin/inventory}" class="btn btn-outline">← Tồn kho</a></p>
+</main>
+
+<footer class="footer">© 2026 FashionStore</footer>
+</body>
+</html>

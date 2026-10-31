@@ -1,17 +1,14 @@
 package com.fashionstore.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "IMPORT_RECEIPT_DETAIL")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter @Setter @NoArgsConstructor
 public class ImportReceiptDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,16 +18,16 @@ public class ImportReceiptDetail {
     @Column(name = "importReceiptId")
     private Integer importReceiptId;
 
-    @Column(name = "variantId")
-    private Integer variantId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "variantId")
+    private ProductVariant variant;
 
     @Column(name = "quantity")
     private Integer quantity;
 
     @Column(name = "unitCost")
-    private java.math.BigDecimal unitCost;
+    private BigDecimal unitCost;
 
     @Column(name = "subTotal")
-    private java.math.BigDecimal subTotal;
-
+    private BigDecimal subTotal;
 }

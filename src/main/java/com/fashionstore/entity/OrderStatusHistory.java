@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 @Table(name = "ORDER_STATUS_HISTORY")
@@ -28,10 +29,13 @@ public class OrderStatusHistory {
     private String note;
 
     @Column(name = "createAt")
-    private LocalDateTime createdAt;
+    private LocalDateTime createAt;
 
     @PrePersist
     void onCreate() {
-        if (createdAt == null) createdAt = LocalDateTime.now();
+        if (createAt == null) createAt = LocalDateTime.now();
+    }
+    public String getCreatedAtText() {
+        return createAt == null ? "" : createAt.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
     }
 }

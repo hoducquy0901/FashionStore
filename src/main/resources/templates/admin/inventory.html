@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Tồn kho - Quản trị</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header th:replace="~{fragments/header :: navbar}"></header>
+<div th:replace="~{fragments/admin-nav :: nav('inventory')}"></div>
+
+<div class="flash flash-ok" th:if="${adminMessage}" th:text="${adminMessage}"></div>
+<div class="flash flash-err" th:if="${adminError}" th:text="${adminError}"></div>
+
+<main class="container">
+    <div class="page-head">
+        <h2 class="section-title">Tồn kho</h2>
+        <a th:href="@{/admin/imports/new}" class="btn">+ Nhập hàng</a>
+    </div>
+
+    <div class="stat-grid">
+        <a class="stat stat-out" th:href="@{/admin/inventory(lowOnly=true)}">
+            <b th:text="${outOfStock}">0</b><span>Hết hàng</span></a>
+        <a class="stat stat-low" th:href="@{/admin/inventory(lowOnly=true)}">
+            <b th:text="${lowStock}">0</b><span th:text="'Sắp hết (còn ≤ ' + ${threshold} + ')'">Sắp hết</span></a>
+    </div>
+
+    <form th:action="@{/admin/inventory}" method="get" class="search-form">
+        <input type="text" name="keyword" th:value="${keyword}" placeholder="Tìm theo tên sản phẩm hoặc SKU">
+        <label class="check"><input type="checkbox" name="lowOnly" value="true" th:checked="${lowOnly}"> Chỉ hiện sắp hết / hết hàng</label>
+        <button type="submit" class="btn">Lọc</button>
+    </form>
+
+    <p th:if="${#lists.isEmpty(items)}" class="empty">Không có dữ liệu tồn kho phù hợp.</p>
+
+    <div class="table-wrap" th:unless="${#lists.isEmpty(items)}">
+        <table class="cart-table">
+            <thead>
+            <tr><th>Sản phẩm</th><th>Vị trí</th><th>Tồn thực</th><th>Đang giữ chỗ</th><th>Có thể bán</th>
+                <th>Điều chỉnh (kiểm kê)</th><th></th></tr>
+            </thead>
+            <tbody>
+            <tr th:each="i : ${items}">
+                <td>
+                    <b th:text="${i.variant.product.productName}">Tên</b><br>
+                    <small>Màu: <span th:text="${i.variant.color?.colorName}">-</span> ·
+                        Size: <span th:text="${i.variant.size?.sizeName}">-</span> ·
+                        SKU: <span th:text="${i.variant.sku}">-</span></small>
+                </td>
+                <td th:text="${i.inventoryLocation}">MAIN</td>
+                <td><b th:text="${i.quantity}">0</b></td>
+                <td th:text="${i.reservedQuantity}">0</td>
+                <td>
+                    <span class="stock-badge"
+                          th:classappend="${i.available <= 0} ? 'stock-out' : (${i.available <= threshold} ? 'stock-low' : 'stock-ok')"
+                          th:text="${i.available}">0</span>
+                </td>
+                <td>
+                    <form th:action="@{/admin/inventory/{id}/adjust(id=${i.inventoryId})}" method="post" class="inline-form">
+                        <input type="hidden" name="keyword" th:value="${keyword}">
+                        <input type="hidden" name="lowOnly" th:value="${lowOnly}">
+                        <input type="hidden" name="page" th:value="${inventoryPage.number}">
+                        <input type="number" name="quantity" min="0" th:value="${i.quantity}" class="qty-input" required>
+                        <input type="text" name="reason" maxlength="150" placeholder="Lý do" required>
+                        <button type="submit" class="btn btn-outline btn-sm" style="width:auto"
+                                data-confirm="Cập nhật số lượng tồn thực tế theo kiểm kê?">Lưu</button>
+                    </form>
+                </td>
+                <td><a th:href="@{/admin/inventory/{id}/history(id=${i.inventoryId})}" class="link">Lịch sử</a></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="pager" th:if="${inventoryPage.totalPages > 1}">
+        <a th:each="p : ${#numbers.sequence(0, inventoryPage.totalPages - 1)}"
+           th:href="@{/admin/inventory(keyword=${keyword},lowOnly=${lowOnly},page=${p})}"
+           th:text="${p + 1}" th:classappend="${p == inventoryPage.number} ? 'active'"></a>
+    </div>
+
+    <p class="hint">Sản phẩm chưa có dòng tồn kho sẽ tự được tạo khi bạn nhập hàng lần đầu.</p>
+</main>
+
+<footer class="footer">© 2026 FashionStore</footer>
+<script th:src="@{/js/admin.js}"></script>
+</body>
+</html>

@@ -31,7 +31,9 @@
 			</div>
 			<div th:if="${username != null}" class="user-box">
 				<span>Xin chào, <b th:text="${username}"></b></span> <a
-					th:href="@{/orders}" class="btn btn-outline">Đơn hàng</a>
+					th:if="${isAdmin}" th:href="@{/admin/orders}"
+					class="btn btn-outline">Quản trị</a> <a th:href="@{/orders}"
+					class="btn btn-outline">Đơn hàng</a>
 				<form th:action="@{/logout}" method="post">
 					<button type="submit" class="btn btn-outline">Đăng xuất</button>
 				</form>

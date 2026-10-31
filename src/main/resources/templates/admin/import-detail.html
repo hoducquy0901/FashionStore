@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title th:text="'Phiếu ' + ${receipt.receiptCode}">Chi tiết
+	phiếu nhập</title>
+<link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+	<header th:replace="~{fragments/header :: navbar}"></header>
+	<div th:replace="~{fragments/admin-nav :: nav('imports')}"></div>
+
+	<div class="flash flash-ok" th:if="${adminMessage}"
+		th:text="${adminMessage}"></div>
+	<div class="flash flash-err" th:if="${adminError}"
+		th:text="${adminError}"></div>
+
+	<main class="container">
+		<h2 class="section-title">
+			Phiếu <span th:text="${receipt.receiptCode}">PN...</span> <span
+				class="tag" th:classappend="'st-' + ${receipt.status}"
+				th:text="${importStatusLabels.get(receipt.status)}"></span>
+		</h2>
+
+		<section class="box">
+			<p>
+				Người tạo: <b th:text="${creator?.fullName}">-</b>
+			</p>
+			<p>
+				Ngày tạo: <b th:text="${receipt.createAtText}"></b>
+			</p>
+			<p th:if="${receipt.confirmAt != null}">
+				Ngày nhập kho: <b th:text="${receipt.confirmAtText}"></b>
+			</p>
+			<p
+				th:if="${receipt.note != null and !#strings.isEmpty(receipt.note)}">
+				Ghi chú: <span th:text="${receipt.note}"></span>
+			</p>
+		</section>
+
+		<div class="table-wrap">
+			<table class="cart-table">
+				<thead>
+					<tr>
+						<th>Sản phẩm</th>
+						<th>Số lượng</th>
+						<th>Đơn giá nhập</th>
+						<th>Thành tiền</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="d : ${details}">
+						<td><b th:text="${d.variant.product.productName}">Tên</b><br>
+							<small>Màu: <span th:text="${d.variant.color?.colorName}">-</span>
+								· Size: <span th:text="${d.variant.size?.sizeName}">-</span> ·
+								SKU: <span th:text="${d.variant.sku}">-</span></small></td>
+						<td th:text="${d.quantity}">1</td>
+						<td
+							th:text="${#numbers.formatDecimal(d.unitCost, 1, 'POINT', 0, 'COMMA')} + ' ₫'">0
+							₫</td>
+						<td class="line-total"
+							th:text="${#numbers.formatDecimal(d.subTotal, 1, 'POINT', 0, 'COMMA')} + ' ₫'">0
+							₫</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+		<div class="order-total box">
+			<div class="sum-row sum-total">
+				<span>Tổng giá trị</span> <span
+					th:text="${#numbers.formatDecimal(receipt.totalAmount, 1, 'POINT', 0, 'COMMA')} + ' ₫'"></span>
+			</div>
+		</div>
+
+		<div class="action-buttons" th:if="${receipt.status == 'DRAFT'}">
+			<form
+				th:action="@{/admin/imports/{code}/confirm(code=${receipt.receiptCode})}"
+				method="post">
+				<button type="submit" class="btn"
+					data-confirm="Xác nhận nhập kho? Tồn kho sẽ được cộng ngay.">Xác
+					nhận nhập kho</button>
+			</form>
+			<form
+				th:action="@{/admin/imports/{code}/cancel(code=${receipt.receiptCode})}"
+				method="post">
+				<button type="submit" class="btn btn-danger"
+					data-confirm="Hủy phiếu nháp này?">Hủy phiếu</button>
+			</form>
+		</div>
+
+		<div class="box" th:if="${receipt.status == 'CONFIRMED'}">
+			<h3>Hoàn tác phiếu đã nhập kho</h3>
+			<p>
+				<small>Dùng khi nhập nhầm hoặc nhập trùng. Hệ thống trừ lại
+					đúng số lượng của phiếu khỏi tồn kho (chỉ thực hiện được nếu số
+					hàng đó chưa bán ra) và chuyển phiếu sang "Đã hủy".</small>
+			</p>
+			<form
+				th:action="@{/admin/imports/{code}/reverse(code=${receipt.receiptCode})}"
+				method="post" class="cancel-form">
+				<input type="text" name="reason" maxlength="100"
+					placeholder="Lý do hoàn tác (bắt buộc)" required>
+				<button type="submit" class="btn btn-danger"
+					data-confirm="Hoàn tác phiếu này và trừ lại tồn kho?">Hoàn
+					tác phiếu nhập</button>
+			</form>
+		</div>
+		<p style="margin-top: 20px">
+			<a th:href="@{/admin/imports}" class="btn btn-outline">← Danh
+				sách phiếu nhập</a>
+		</p>
+	</main>
+
+	<footer class="footer">© 2026 FashionStore</footer>
+	<script th:src="@{/js/admin.js}"></script>
+</body>
+</html>

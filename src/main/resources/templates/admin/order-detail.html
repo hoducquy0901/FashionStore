@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="'Đơn ' + ${order.orderCode} + ' - Quản trị'">Chi tiết đơn</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header th:replace="~{fragments/header :: navbar}"></header>
+<div th:replace="~{fragments/admin-nav :: nav('orders')}"></div>
+
+<div class="flash flash-ok" th:if="${adminMessage}" th:text="${adminMessage}"></div>
+<div class="flash flash-err" th:if="${adminError}" th:text="${adminError}"></div>
+
+<main class="container">
+    <h2 class="section-title">
+        Đơn <span th:text="${order.orderCode}">FS...</span>
+        <span class="tag" th:classappend="'st-' + ${order.orderStatus}"
+              th:text="${orderStatusLabels.get(order.orderStatus)}"></span>
+    </h2>
+
+    <div class="warn-box" th:if="${refundNeeded}">
+        Đơn hàng đã <b th:text="${orderStatusLabels.get(order.orderStatus)}"></b> nhưng khách <b>đã thanh toán</b>.
+        Hãy hoàn tiền cho khách (qua trang quản trị VNPay hoặc chuyển khoản), rồi bấm "Đã hoàn tiền".
+    </div>
+
+    <div class="admin-grid">
+        <section class="box">
+            <h3>Khách hàng</h3>
+            <p th:if="${customer != null}">
+                <b th:text="${customer.fullName}"></b><br>
+                <span th:text="${customer.email}"></span><br>
+                <span th:text="${customer.phone}"></span>
+            </p>
+            <p>Ngày đặt: <b th:text="${order.createdAtText}"></b></p>
+            <h3 style="margin-top:16px">Giao đến</h3>
+            <p th:if="${address != null}">
+                <b th:text="${address.receiverName}"></b> · <span th:text="${address.phone}"></span><br>
+                <small th:text="${address.addressDetail + ', ' + address.ward + ', ' + address.district + ', ' + address.province}"></small>
+            </p>
+        </section>
+
+        <section class="box">
+            <h3>Thanh toán</h3>
+            <div th:if="${payment != null}">
+                <p>Phương thức: <b th:text="${paymentMethodLabels.get(payment.paymentMethod)}"></b></p>
+                <p>Trạng thái: <span class="tag" th:text="${paymentStatusLabels.get(payment.paymentStatus)}"></span></p>
+                <p>Số tiền: <b th:text="${#numbers.formatDecimal(payment.amount, 1, 'POINT', 0, 'COMMA')} + ' ₫'"></b></p>
+                <p th:if="${payment.paidAt != null}">Thanh toán lúc: <b th:text="${payment.paidAtText}"></b></p>
+                <p th:if="${payment.transactionCode != null}">Mã giao dịch: <b th:text="${payment.transactionCode}"></b></p>
+
+                <form th:if="${canMarkPaid}" th:action="@{/admin/orders/{code}/mark-paid(code=${order.orderCode})}" method="post">
+                    <button type="submit" class="btn btn-sm" style="width:auto"
+                            data-confirm="Xác nhận đã nhận đủ tiền của khách?">Xác nhận đã thanh toán</button>
+                </form>
+                <form th:if="${refundNeeded}" th:action="@{/admin/orders/{code}/refund(code=${order.orderCode})}" method="post">
+                    <button type="submit" class="btn btn-sm" style="width:auto"
+                            data-confirm="Bạn đã hoàn tiền cho khách chưa? Hệ thống chỉ ghi nhận trạng thái, không tự chuyển tiền.">
+                        Đã hoàn tiền</button>
+                </form>
+            </div>
+        </section>
+    </div>
+
+    <div class="table-wrap">
+        <table class="cart-table">
+            <thead><tr><th>Sản phẩm</th><th>Đơn giá</th><th>Số lượng</th><th>Thành tiền</th></tr></thead>
+            <tbody>
+            <tr th:each="d : ${details}">
+                <td>
+                    <b th:text="${d.variant.product.productName}">Tên</b><br>
+                    <small>Màu: <span th:text="${d.variant.color?.colorName}">-</span> ·
+                        Size: <span th:text="${d.variant.size?.sizeName}">-</span> ·
+                        SKU: <span th:text="${d.variant.sku}">-</span></small>
+                </td>
+                <td th:text="${#numbers.formatDecimal(d.unitPrice, 1, 'POINT', 0, 'COMMA')} + ' ₫'">0 ₫</td>
+                <td th:text="${d.quantity}">1</td>
+                <td class="line-total" th:text="${#numbers.formatDecimal(d.subTotal, 1, 'POINT', 0, 'COMMA')} + ' ₫'">0 ₫</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="order-total box">
+        <div class="sum-row"><span>Tạm tính</span>
+            <span th:text="${#numbers.formatDecimal(order.totalAmount, 1, 'POINT', 0, 'COMMA')} + ' ₫'"></span></div>
+        <div class="sum-row"><span>Phí vận chuyển</span>
+            <span th:text="${#numbers.formatDecimal(order.shippingFee, 1, 'POINT', 0, 'COMMA')} + ' ₫'"></span></div>
+        <div class="sum-row sum-total"><span>Tổng cộng</span>
+            <span th:text="${#numbers.formatDecimal(order.finalAmount, 1, 'POINT', 0, 'COMMA')} + ' ₫'"></span></div>
+    </div>
+
+    <div class="admin-grid" style="margin-top:20px">
+        <section class="box">
+            <h3>Cập nhật trạng thái</h3>
+            <p th:if="${#lists.isEmpty(nextStatuses)}" class="empty">Đơn hàng đã kết thúc, không thể đổi trạng thái.</p>
+            <form th:unless="${#lists.isEmpty(nextStatuses)}"
+                  th:action="@{/admin/orders/{code}/status(code=${order.orderCode})}" method="post">
+                <input type="text" name="note" maxlength="150" class="note-input" placeholder="Ghi chú (không bắt buộc)">
+                <div class="action-buttons">
+                    <button type="submit" name="newStatus" class="btn"
+                            th:each="s : ${nextStatuses}" th:value="${s}"
+                            th:text="${s == 'CANCELLED'} ? 'Hủy đơn' : (${s == 'RETURNED'} ? 'Ghi nhận trả hàng' : ${orderStatusLabels.get(s)})"
+                            th:classappend="${s == 'CANCELLED' or s == 'RETURNED'} ? 'btn-danger'"
+                            th:attr="data-confirm=${s == 'CANCELLED'} ? 'Hủy đơn này và trả hàng giữ chỗ về kho?' : (${s == 'RETURNED'} ? 'Xác nhận hàng đã được trả về kho?' : '')">
+                    </button>
+                </div>
+                <small>Chuyển sang "Đang giao" sẽ trừ tồn kho thật. Hủy đơn trả lại phần hàng giữ chỗ.</small>
+            </form>
+        </section>
+
+        <section class="box">
+            <h3>Lịch sử đơn hàng</h3>
+            <ul class="timeline">
+                <li th:each="h : ${history}">
+                    <b th:text="${orderStatusLabels.get(h.status)}"></b>
+                    <small th:text="${h.createdAtText}"></small><br>
+                    <span th:text="${h.note}"></span>
+                </li>
+            </ul>
+        </section>
+    </div>
+
+    <p style="margin-top:20px"><a th:href="@{/admin/orders}" class="btn btn-outline">← Danh sách đơn hàng</a></p>
+</main>
+
+<footer class="footer">© 2026 FashionStore</footer>
+<script th:src="@{/js/admin.js}"></script>
+</body>
+</html>

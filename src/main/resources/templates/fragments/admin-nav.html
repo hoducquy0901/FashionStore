@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<nav th:fragment="nav(active)" class="admin-nav">
+    <a th:href="@{/admin/orders}" th:classappend="${active == 'orders'} ? 'active'">Đơn hàng</a>
+    <a th:href="@{/admin/imports}" th:classappend="${active == 'imports'} ? 'active'">Phiếu nhập</a>
+    <a th:href="@{/admin/inventory}" th:classappend="${active == 'inventory'} ? 'active'">Tồn kho</a>
+</nav>
+</body>
+</html>

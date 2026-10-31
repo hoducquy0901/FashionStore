@@ -80,7 +80,7 @@ public class PaymentService {
             int dash = txnRef.indexOf('-');
             orderCode = dash > 0 ? txnRef.substring(0, dash) : txnRef;
         }
-        Orders order = orderCode == null ? null : orderRepository.findByOrderCode(orderCode).orElse(null);
+        Orders order = orderCode == null ? null : orderRepository.lockByOrderCode(orderCode).orElse(null);
         if (order == null) {
             return new VnpayResult("01", "Order not found", false, orderCode, null);
         }

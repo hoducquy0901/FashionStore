@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Tạo phiếu nhập - Quản trị</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header th:replace="~{fragments/header :: navbar}"></header>
+<div th:replace="~{fragments/admin-nav :: nav('imports')}"></div>
+
+<div class="flash flash-err" th:if="${adminError}" th:text="${adminError}"></div>
+
+<main class="container">
+    <h2 class="section-title">Tạo phiếu nhập hàng</h2>
+
+    <form th:action="@{/admin/imports}" method="post" id="import-form">
+    <input type="hidden" name="formToken" th:value="${formToken}">
+        <section class="box">
+            <h3>1. Chọn sản phẩm</h3>
+            <input type="text" id="variant-filter" class="note-input" placeholder="Gõ để lọc theo tên sản phẩm hoặc SKU...">
+            <select id="variant-select" size="7" class="variant-select">
+                <option th:each="v : ${variants}" th:value="${v.variantId}"
+                        th:text="${v.product.productName + ' - ' + v.color?.colorName + ' / ' + v.size?.sizeName + ' (' + v.sku + ')'}"></option>
+            </select>
+            <div class="add-line">
+                <label>Số lượng <input type="number" id="add-qty" min="1" value="1"></label>
+                <label>Đơn giá nhập (₫) <input type="number" id="add-cost" min="0" step="1000" value="0"></label>
+                <button type="button" id="add-row" class="btn btn-outline">Thêm vào phiếu</button>
+            </div>
+        </section>
+
+        <section class="box">
+            <h3>2. Danh sách nhập</h3>
+            <div class="table-wrap">
+                <table class="cart-table">
+                    <thead><tr><th>Sản phẩm</th><th>Số lượng</th><th>Đơn giá nhập</th><th>Thành tiền</th><th></th></tr></thead>
+                    <tbody id="rows">
+                    <tr id="empty-row"><td colspan="5" class="empty">Chưa có sản phẩm nào trong phiếu.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="sum-row sum-total"><span>Tổng giá trị phiếu</span><span id="grand-total">0 ₫</span></div>
+        </section>
+
+        <section class="box">
+            <h3>3. Ghi chú</h3>
+            <textarea name="note" rows="2" maxlength="500" class="note-input" placeholder="Nhà cung cấp, số hóa đơn..."></textarea>
+        </section>
+
+        <div class="action-buttons">
+            <button type="submit" name="action" value="draft" class="btn btn-outline">Lưu nháp</button>
+            <button type="submit" name="action" value="confirm" class="btn"
+                    data-confirm="Nhập kho ngay? Tồn kho sẽ được cộng ngay lập tức.">Lưu và nhập kho</button>
+            <a th:href="@{/admin/imports}" class="btn btn-outline">Hủy</a>
+        </div>
+    </form>
+</main>
+
+<footer class="footer">© 2026 FashionStore</footer>
+<script th:src="@{/js/admin.js}"></script>
+<script th:src="@{/js/import-form.js}"></script>
+</body>
+</html>

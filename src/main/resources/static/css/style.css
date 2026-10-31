@@ -111,7 +111,7 @@ a {
 	display: grid;
 	grid-template-columns: repeat(4, 1fr);
 	gap: 24px;
-} 
+}
 
 .product-card {
 	background: #fff;
@@ -770,4 +770,330 @@ a {
 	justify-content: center;
 	flex-wrap: wrap;
 	margin-top: 18px;
+}
+/* Admin đơn hàng */
+.filter-tabs {
+	display: flex;
+	gap: 8px;
+	flex-wrap: wrap;
+	margin-bottom: 14px;
+}
+
+.filter-tabs a {
+	padding: 6px 12px;
+	border: 1px solid #ddd;
+	border-radius: 16px;
+	font-size: 14px;
+	background: #fff;
+}
+
+.filter-tabs a.active {
+	background: #111;
+	color: #fff;
+	border-color: #111;
+}
+
+.search-form {
+	display: flex;
+	gap: 8px;
+	margin-bottom: 16px;
+}
+
+.search-form input[type=text] {
+	flex: 1;
+	max-width: 320px;
+	padding: 9px 12px;
+	border: 1px solid #ccc;
+	border-radius: 6px;
+}
+
+.pager {
+	display: flex;
+	gap: 6px;
+	margin-top: 16px;
+	flex-wrap: wrap;
+}
+
+.pager a {
+	padding: 6px 12px;
+	border: 1px solid #ddd;
+	border-radius: 6px;
+	background: #fff;
+}
+
+.pager a.active {
+	background: #111;
+	color: #fff;
+	border-color: #111;
+}
+
+.btn-danger {
+	background: #c0392b;
+	border-color: #c0392b;
+	color: #fff;
+}
+
+.admin-grid {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 20px;
+}
+
+.note-input {
+	width: 100%;
+	padding: 9px 12px;
+	border: 1px solid #ccc;
+	border-radius: 6px;
+	margin-bottom: 10px;
+}
+
+.action-buttons {
+	display: flex;
+	gap: 10px;
+	flex-wrap: wrap;
+	margin-bottom: 10px;
+}
+
+.cancel-form {
+	display: flex;
+	gap: 10px;
+	flex-wrap: wrap;
+	margin-bottom: 8px;
+}
+
+.cancel-form input {
+	flex: 1;
+	min-width: 200px;
+	padding: 9px 12px;
+	border: 1px solid #ccc;
+	border-radius: 6px;
+}
+
+.warn-box {
+	background: #fdecea;
+	color: #b71c1c;
+	padding: 12px 14px;
+	border-radius: 8px;
+	margin-bottom: 16px;
+}
+
+.timeline {
+	list-style: none;
+	border-left: 2px solid #ddd;
+	margin-left: 8px;
+	padding-left: 18px;
+}
+
+.timeline li {
+	margin-bottom: 14px;
+	position: relative;
+}
+
+.timeline li::before {
+	content: '';
+	position: absolute;
+	left: -25px;
+	top: 5px;
+	width: 10px;
+	height: 10px;
+	border-radius: 50%;
+	background: #111;
+}
+
+.st-PENDING {
+	background: #fff3cd;
+	color: #8a6d00;
+}
+
+.st-CONFIRMED {
+	background: #d1ecf1;
+	color: #0c5460;
+}
+
+.st-PREPARING {
+	background: #e2e3f3;
+	color: #383d7a;
+}
+
+.st-SHIPPING {
+	background: #cfe2ff;
+	color: #084298;
+}
+
+.st-COMPLETED {
+	background: #d1e7dd;
+	color: #0f5132;
+}
+
+.st-CANCELLED {
+	background: #f8d7da;
+	color: #842029;
+}
+
+.st-RETURNED {
+	background: #e0e0e0;
+	color: #333;
+}
+
+@media ( max-width : 800px) {
+	.admin-grid {
+		grid-template-columns: 1fr;
+	}
+}
+/* Kho và phiếu nhập */
+.admin-nav {
+	display: flex;
+	gap: 6px;
+	padding: 10px 32px;
+	background: #f5f5f5;
+	border-bottom: 1px solid #eee;
+}
+
+.admin-nav a {
+	padding: 6px 14px;
+	border-radius: 6px;
+	font-size: 14px;
+}
+
+.admin-nav a.active {
+	background: #111;
+	color: #fff;
+}
+
+.page-head {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 12px;
+	flex-wrap: wrap;
+	margin-bottom: 14px;
+}
+
+.page-head .section-title {
+	margin: 0;
+}
+
+.stat-grid {
+	display: flex;
+	gap: 14px;
+	flex-wrap: wrap;
+	margin-bottom: 16px;
+}
+
+.stat {
+	display: flex;
+	flex-direction: column;
+	min-width: 160px;
+	padding: 14px 18px;
+	border-radius: 10px;
+	background: #fff;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, .06);
+}
+
+.stat b {
+	font-size: 26px;
+}
+
+.stat span {
+	font-size: 13px;
+	color: #666;
+}
+
+.stat-out b {
+	color: #c0392b;
+}
+
+.stat-low b {
+	color: #e67e22;
+}
+
+.search-form .check {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	font-size: 14px;
+}
+
+.stock-badge {
+	display: inline-block;
+	min-width: 34px;
+	text-align: center;
+	padding: 3px 8px;
+	border-radius: 12px;
+	font-weight: 700;
+}
+
+.stock-ok {
+	background: #d1e7dd;
+	color: #0f5132;
+}
+
+.stock-low {
+	background: #fff3cd;
+	color: #8a6d00;
+}
+
+.stock-out {
+	background: #f8d7da;
+	color: #842029;
+}
+
+.inline-form {
+	display: flex;
+	gap: 6px;
+	align-items: center;
+	flex-wrap: wrap;
+}
+
+.inline-form input[type=text] {
+	width: 150px;
+	padding: 6px 8px;
+	border: 1px solid #ccc;
+	border-radius: 6px;
+}
+
+.variant-select {
+	width: 100%;
+	padding: 6px;
+	border: 1px solid #ccc;
+	border-radius: 6px;
+	font-size: 14px;
+}
+
+.add-line {
+	display: flex;
+	gap: 14px;
+	align-items: flex-end;
+	flex-wrap: wrap;
+	margin-top: 12px;
+}
+
+.add-line label {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	font-size: 14px;
+	font-weight: 600;
+}
+
+.add-line input {
+	padding: 8px 10px;
+	border: 1px solid #ccc;
+	border-radius: 6px;
+	width: 150px;
+}
+
+.cost-input {
+	width: 130px;
+}
+
+.hint {
+	color: #777;
+	font-size: 13px;
+	margin-top: 12px;
+}
+
+.st-DRAFT {
+	background: #fff3cd;
+	color: #8a6d00;
 }

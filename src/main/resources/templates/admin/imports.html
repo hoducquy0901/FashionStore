@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Phiếu nhập hàng - Quản trị</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header th:replace="~{fragments/header :: navbar}"></header>
+<div th:replace="~{fragments/admin-nav :: nav('imports')}"></div>
+
+<div class="flash flash-ok" th:if="${adminMessage}" th:text="${adminMessage}"></div>
+<div class="flash flash-err" th:if="${adminError}" th:text="${adminError}"></div>
+
+<main class="container">
+    <div class="page-head">
+        <h2 class="section-title">Phiếu nhập hàng</h2>
+        <a th:href="@{/admin/imports/new}" class="btn">+ Tạo phiếu nhập</a>
+    </div>
+
+    <div class="filter-tabs">
+        <a th:href="@{/admin/imports(keyword=${keyword})}" th:classappend="${status == ''} ? 'active'">Tất cả</a>
+        <a th:each="s : ${importStatusLabels}" th:href="@{/admin/imports(status=${s.key},keyword=${keyword})}"
+           th:text="${s.value}" th:classappend="${status == s.key} ? 'active'"></a>
+    </div>
+
+    <form th:action="@{/admin/imports}" method="get" class="search-form">
+        <input type="hidden" name="status" th:value="${status}">
+        <input type="text" name="keyword" th:value="${keyword}" placeholder="Tìm theo mã phiếu">
+        <button type="submit" class="btn">Tìm</button>
+    </form>
+
+    <p th:if="${#lists.isEmpty(receipts)}" class="empty">Chưa có phiếu nhập nào.</p>
+
+    <div class="table-wrap" th:unless="${#lists.isEmpty(receipts)}">
+        <table class="cart-table">
+            <thead>
+            <tr><th>Mã phiếu</th><th>Người tạo</th><th>Ngày tạo</th><th>Tổng giá trị</th><th>Trạng thái</th><th>Ngày nhập kho</th><th></th></tr>
+            </thead>
+            <tbody>
+            <tr th:each="r : ${receipts}">
+                <td><b th:text="${r.receiptCode}">PN...</b></td>
+                <td th:text="${creators.get(r.createBy)?.fullName}">-</td>
+                <td th:text="${r.createAtText}"></td>
+                <td class="line-total" th:text="${#numbers.formatDecimal(r.totalAmount, 1, 'POINT', 0, 'COMMA')} + ' ₫'">0 ₫</td>
+                <td><span class="tag" th:classappend="'st-' + ${r.status}" th:text="${importStatusLabels.get(r.status)}"></span></td>
+                <td th:text="${r.confirmAtText}"></td>
+                <td><a th:href="@{/admin/imports/{code}(code=${r.receiptCode})}" class="link">Chi tiết</a></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="pager" th:if="${receiptPage.totalPages > 1}">
+        <a th:each="i : ${#numbers.sequence(0, receiptPage.totalPages - 1)}"
+           th:href="@{/admin/imports(status=${status},keyword=${keyword},page=${i})}"
+           th:text="${i + 1}" th:classappend="${i == receiptPage.number} ? 'active'"></a>
+    </div>
+</main>
+
+<footer class="footer">© 2026 FashionStore</footer>
+</body>
+</html>

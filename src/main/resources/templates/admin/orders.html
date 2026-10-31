@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Quản lý đơn hàng - FashionStore</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header th:replace="~{fragments/header :: navbar}"></header>
+<div th:replace="~{fragments/admin-nav :: nav('orders')}"></div>
+
+<div class="flash flash-ok" th:if="${adminMessage}" th:text="${adminMessage}"></div>
+<div class="flash flash-err" th:if="${adminError}" th:text="${adminError}"></div>
+
+<main class="container">
+    <h2 class="section-title">Quản lý đơn hàng</h2>
+
+    <div class="filter-tabs">
+        <a th:href="@{/admin/orders(keyword=${keyword})}" th:classappend="${status == ''} ? 'active'">Tất cả</a>
+        <a th:each="s : ${orderStatusLabels}"
+           th:href="@{/admin/orders(status=${s.key},keyword=${keyword})}"
+           th:text="${s.value}" th:classappend="${status == s.key} ? 'active'"></a>
+    </div>
+
+    <form th:action="@{/admin/orders}" method="get" class="search-form">
+        <input type="hidden" name="status" th:value="${status}">
+        <input type="text" name="keyword" th:value="${keyword}" placeholder="Tìm theo mã đơn hàng">
+        <button type="submit" class="btn">Tìm</button>
+    </form>
+
+    <p th:if="${#lists.isEmpty(orders)}" class="empty">Không có đơn hàng nào.</p>
+
+    <div class="table-wrap" th:unless="${#lists.isEmpty(orders)}">
+        <table class="cart-table">
+            <thead>
+            <tr><th>Mã đơn</th><th>Khách hàng</th><th>Ngày đặt</th><th>Tổng tiền</th>
+                <th>Thanh toán</th><th>Trạng thái</th><th></th></tr>
+            </thead>
+            <tbody>
+            <tr th:each="o : ${orders}">
+                <td><b th:text="${o.orderCode}">FS...</b></td>
+                <td>
+                    <span th:text="${customers.get(o.userId)?.fullName}">-</span><br>
+                    <small th:text="${customers.get(o.userId)?.email}"></small>
+                </td>
+                <td th:text="${o.createdAtText}">01/01/2026</td>
+                <td class="line-total" th:text="${#numbers.formatDecimal(o.finalAmount, 1, 'POINT', 0, 'COMMA')} + ' ₫'">0 ₫</td>
+                <td>
+                    <div th:if="${payments.get(o.orderId) != null}" th:with="p=${payments.get(o.orderId)}">
+                        <small th:text="${paymentMethodLabels.get(p.paymentMethod)}"></small><br>
+                        <span class="tag" th:text="${paymentStatusLabels.get(p.paymentStatus)}"></span>
+                    </div>
+                </td>
+                <td><span class="tag" th:classappend="'st-' + ${o.orderStatus}"
+                          th:text="${orderStatusLabels.get(o.orderStatus)}"></span></td>
+                <td><a th:href="@{/admin/orders/{code}(code=${o.orderCode})}" class="link">Chi tiết</a></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="pager" th:if="${orderPage.totalPages > 1}">
+        <a th:each="i : ${#numbers.sequence(0, orderPage.totalPages - 1)}"
+           th:href="@{/admin/orders(status=${status},keyword=${keyword},page=${i})}"
+           th:text="${i + 1}" th:classappend="${i == orderPage.number} ? 'active'"></a>
+    </div>
+</main>
+
+<footer class="footer">© 2026 FashionStore</footer>
+<script th:src="@{/js/admin.js}"></script>
+</body>
+</html>

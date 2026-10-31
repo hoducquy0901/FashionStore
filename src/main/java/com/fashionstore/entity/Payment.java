@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 @Table(name = "PAYMENT")
@@ -33,4 +34,8 @@ public class Payment {
 
     @Column(name = "paidAt")
     private LocalDateTime paidAt;
+    
+    public String getPaidAtText() {
+        return paidAt == null ? "" : paidAt.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
+    }
 }
