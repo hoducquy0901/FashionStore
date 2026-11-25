@@ -13,6 +13,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -40,6 +41,8 @@ public class ProductController {
         // Ảnh: ảnh chính lên đầu
         List<ProductImage> images = new ArrayList<>(product.getImages());
         images.sort(Comparator.comparing((ProductImage i) -> !Boolean.TRUE.equals(i.getMain())));
+        List<ProductImage> productImages = images.stream().filter(image -> image.getVariantId() == null).toList();
+        List<ProductImage> variantImages = images.stream().filter(image -> image.getVariantId() != null).toList();
 
         // Biến thể, danh sách màu và size (không trùng)
         List<ProductVariant> variants = variantRepository.findByProduct_ProductIdAndStatus(id, "ACTIVE");
@@ -57,6 +60,12 @@ public class ProductController {
 
         model.addAttribute("product", product);
         model.addAttribute("images", images);
+        model.addAttribute("productImages", productImages);
+        model.addAttribute("variantImages", variantImages);
+        model.addAttribute("variantColorById", variants.stream()
+                .filter(variant -> variant.getColor() != null)
+                .collect(Collectors.toMap(ProductVariant::getVariantId,
+                        variant -> variant.getColor().getColorId(), (first, second) -> first)));
         model.addAttribute("mainImage", images.isEmpty() ? null : images.get(0).getImageUrl());
         model.addAttribute("variants", variants);
         model.addAttribute("colors", colors.values());

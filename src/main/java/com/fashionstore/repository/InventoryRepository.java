@@ -43,6 +43,8 @@ public interface InventoryRepository extends JpaRepository<Inventory, Integer> {
 
     Optional<Inventory> findByVariantId(Integer variantId);
 
+    Optional<Inventory> findByVariantIdAndInventoryLocation(Integer variantId, String inventoryLocation);
+
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select i from Inventory i where i.variantId = :variantId")
     Optional<Inventory> lockByVariantId(@Param("variantId") Integer variantId);

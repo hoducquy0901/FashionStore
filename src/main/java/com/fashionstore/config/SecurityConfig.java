@@ -21,7 +21,7 @@ public class SecurityConfig {
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http.authorizeHttpRequests(auth -> auth
 				.requestMatchers("/", "/login", "/register", "/category/**", "/product/**", "/payment/vnpay/return",
-						"/payment/vnpay/ipn", "/css/**", "/js/**", "/images/**", "/error")
+						"/payment/vnpay/ipn", "/css/**", "/js/**", "/images/**", "/uploads/**", "/error")
 				.permitAll().requestMatchers("/admin/**").hasRole("ADMIN").anyRequest().authenticated())
 				.formLogin(form -> form.loginPage("/login").loginProcessingUrl("/login").usernameParameter("email")
 						.passwordParameter("password").defaultSuccessUrl("/", true).failureUrl("/login?error")

@@ -63,6 +63,22 @@ public class InventoryService {
 
     // ===================== Ghi =====================
 
+    /** Creates the default warehouse row for a variant without changing existing stock. */
+    @Transactional
+    public Inventory ensureDefaultInventory(Integer variantId) {
+        return inventoryRepository.findByVariantIdAndInventoryLocation(
+                        variantId, InventoryConstants.DEFAULT_LOCATION)
+                .orElseGet(() -> {
+                    Inventory inventory = new Inventory();
+                    inventory.setVariantId(variantId);
+                    inventory.setInventoryLocation(InventoryConstants.DEFAULT_LOCATION);
+                    inventory.setQuantity(0);
+                    inventory.setReservedQuantity(0);
+                    inventory.setUpdateAt(LocalDateTime.now());
+                    return inventoryRepository.save(inventory);
+                });
+    }
+
     /** Cộng hàng vào kho (nhập hàng). Chưa có dòng tồn kho thì tự tạo. */
     @Transactional
     public void addStock(Integer variantId, int qty, Integer actorId, String type, String note) {

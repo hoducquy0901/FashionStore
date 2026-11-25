@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Ảnh quá lớn - FashionStore</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<main class="container admin-products">
+    <section class="admin-panel">
+        <h1>Ảnh vượt quá dung lượng cho phép</h1>
+        <p>Vui lòng chọn ảnh nhỏ hơn 5 MB rồi tải lại.</p>
+        <a class="btn" th:href="@{/admin/products}">Về quản lý sản phẩm</a>
+    </section>
+</main>
+</body>
+</html>

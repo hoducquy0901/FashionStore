@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${(form.productId == null ? 'Thêm sản phẩm' : 'Chỉnh sửa sản phẩm') + ' - Quản trị'}">Sản phẩm</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header th:replace="~{fragments/header :: navbar}"></header>
+<div th:replace="~{fragments/admin-nav :: nav('products')}"></div>
+<main class="container admin-products admin-product-editor">
+    <div class="flash flash-ok" th:if="${adminMessage}" th:text="${adminMessage}"></div>
+    <div class="flash flash-err" th:if="${adminError}" th:text="${adminError}"></div>
+    <div class="page-head">
+        <div>
+            <h1 class="section-title" th:text="${form.productId == null ? 'Thêm sản phẩm' : 'Chỉnh sửa sản phẩm'}">Sản phẩm</h1>
+            <p class="muted" th:if="${form.productId != null}" th:text="${'Mã sản phẩm: ' + form.productId}">Mã sản phẩm</p>
+        </div>
+        <a class="btn btn-secondary" th:href="@{/admin/products}">Quay lại danh sách</a>
+    </div>
+
+    <section class="admin-panel">
+        <h2>Thông tin sản phẩm</h2>
+        <form th:action="@{/admin/products/save}" th:object="${form}" method="post" class="admin-form-grid">
+            <input type="hidden" th:field="*{productId}">
+            <label>Tên sản phẩm
+                <input type="text" th:field="*{productName}" maxlength="200" required>
+                <small class="field-error" th:if="${#fields.hasErrors('productName')}" th:errors="*{productName}"></small>
+            </label>
+            <label>Danh mục
+                <select th:field="*{categoryId}" required>
+                    <option value="">-- Chọn danh mục --</option>
+                    <option th:each="category : ${categoryOptions}" th:value="${category.id}" th:text="${category.label}"></option>
+                </select>
+                <small class="field-error" th:if="${#fields.hasErrors('categoryId')}" th:errors="*{categoryId}"></small>
+            </label>
+            <label>Thương hiệu
+                <input type="text" th:field="*{brand}" maxlength="100">
+                <small class="field-error" th:if="${#fields.hasErrors('brand')}" th:errors="*{brand}"></small>
+            </label>
+            <label>Giá cơ bản (₫)
+                <input type="number" th:field="*{basePrice}" min="0" step="1000" required>
+                <small class="field-error" th:if="${#fields.hasErrors('basePrice')}" th:errors="*{basePrice}"></small>
+            </label>
+            <label>Trạng thái
+                <select name="status" required>
+                    <option th:each="entry : ${productStatuses}" th:value="${entry.key}" th:text="${entry.value}"></option>
+                </select>
+                <small class="field-error" th:if="${#fields.hasErrors('status')}" th:errors="*{status}"></small>
+            </label>
+            <label class="wide-field">Mô tả<textarea th:field="*{description}" rows="4"></textarea></label>
+            <div class="wide-field form-actions"><button class="btn" type="submit">Lưu thông tin</button></div>
+        </form>
+    </section>
+
+    <div th:if="${form.productId != null}">
+        <section class="admin-panel" id="variants">
+            <div class="panel-heading"><div><h2>Biến thể</h2><p class="muted">Mỗi tổ hợp màu và kích cỡ chỉ được tạo một lần.</p></div></div>
+            <form th:action="@{/admin/products/{id}/variants(id=${form.productId})}" th:object="${variantForm}"
+                  method="post" class="admin-form-grid variant-create-form">
+                <label>Kích cỡ<select th:field="*{sizeId}" required>
+                    <option value="">-- Chọn size --</option>
+                    <option th:each="size : ${sizes}" th:value="${size.id}" th:text="${size.label}"></option>
+                </select></label>
+                <label>Màu sắc<select th:field="*{colorId}" required>
+                    <option value="">-- Chọn màu --</option>
+                    <option th:each="color : ${colors}" th:value="${color.id}" th:text="${color.label}"></option>
+                </select></label>
+                <label>SKU<input type="text" th:field="*{sku}" maxlength="50" required></label>
+                <label>Giá biến thể (₫)<input type="number" th:field="*{price}" min="0" step="1000" required></label>
+                <label>Trạng thái<select th:field="*{status}">
+                    <option th:each="entry : ${variantStatuses}" th:value="${entry.key}" th:text="${entry.value}"></option>
+                </select></label>
+                <div class="form-actions"><button class="btn" type="submit">+ Thêm biến thể</button></div>
+            </form>
+
+            <p class="empty" th:if="${variants.isEmpty()}">Sản phẩm chưa có biến thể.</p>
+            <div class="variant-admin-list" th:unless="${variants.isEmpty()}">
+                <div class="variant-admin-row" th:each="variant : ${variants}">
+                    <form th:action="@{/admin/products/{id}/variants/{variantId}(id=${form.productId},variantId=${variant.variantId})}"
+                          method="post" class="variant-edit-form">
+                        <label>Kích cỡ<select name="sizeId" required>
+                            <option th:each="size : ${sizes}" th:value="${size.id}" th:text="${size.label}" th:selected="${size.id == variant.sizeId}"></option>
+                        </select></label>
+                        <label>Màu<select name="colorId" required>
+                            <option th:each="color : ${colors}" th:value="${color.id}" th:text="${color.label}" th:selected="${color.id == variant.colorId}"></option>
+                        </select></label>
+                        <label>SKU<input type="text" name="sku" th:value="${variant.sku}" maxlength="50" required></label>
+                        <label>Giá<input type="number" name="price" th:value="${variant.price}" min="0" step="1000" required></label>
+                        <label>Trạng thái<select name="status" required>
+                            <option th:each="entry : ${variantStatuses}" th:value="${entry.key}" th:text="${entry.value}" th:selected="${entry.key == variant.status}"></option>
+                        </select></label>
+                        <button class="btn btn-small" type="submit">Lưu</button>
+                    </form>
+                    <div class="variant-meta">
+                        <span class="color-swatch" th:style="${variant.colorHex != null ? 'background-color:' + variant.colorHex : ''}"></span>
+                        <span th:text="${variant.colorName + ' / ' + variant.sizeName}">Màu / Size</span>
+                        <form th:if="${variant.status == 'ACTIVE'}"
+                              th:action="@{/admin/products/{id}/variants/{variantId}/deactivate(id=${form.productId},variantId=${variant.variantId})}"
+                              method="post" onsubmit="return confirm('Ngừng bán biến thể này?')">
+                            <button class="btn btn-danger btn-small" type="submit">Ngừng bán</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="admin-panel" id="images">
+            <div class="panel-heading"><div><h2>Hình ảnh sản phẩm</h2><p class="muted">JPEG, PNG hoặc GIF; tối đa 5 MB mỗi ảnh.</p></div></div>
+            <form th:action="@{/admin/products/{id}/images(id=${form.productId})}" method="post"
+                  enctype="multipart/form-data" class="image-upload-form">
+                <label>Chọn ảnh<input type="file" name="file" accept="image/jpeg,image/png,image/gif" required></label>
+                <label>Gắn với biến thể (không bắt buộc)
+                    <select name="variantId"><option value="">Ảnh dùng chung cho sản phẩm</option>
+                        <option th:each="variant : ${variants}" th:value="${variant.variantId}"
+                                th:text="${variant.colorName + ' / ' + variant.sizeName + ' (' + variant.sku + ')'}"></option>
+                    </select>
+                </label>
+                <label class="checkbox-label"><input type="checkbox" name="main" value="true"> Đặt làm ảnh đại diện</label>
+                <button class="btn" type="submit">Tải ảnh lên</button>
+            </form>
+            <p class="empty" th:if="${images.isEmpty()}">Sản phẩm chưa có hình ảnh.</p>
+            <div class="product-image-grid" th:unless="${images.isEmpty()}">
+                <article class="product-image-card" th:each="image : ${images}">
+                    <img th:src="${image.imageUrl}" th:alt="${form.productName}">
+                    <div class="image-card-info"><span th:text="${image.variantLabel}">Toàn sản phẩm</span>
+                        <strong class="main-image-label" th:if="${image.main}">Ảnh đại diện</strong></div>
+                    <div class="image-card-actions">
+                        <form th:unless="${image.main}"
+                              th:action="@{/admin/products/{id}/images/{imageId}/main(id=${form.productId},imageId=${image.imageId})}"
+                              method="post"><button class="btn btn-small btn-secondary" type="submit">Chọn làm ảnh đại diện</button></form>
+                        <form th:action="@{/admin/products/{id}/images/{imageId}/delete(id=${form.productId},imageId=${image.imageId})}"
+                              method="post" onsubmit="return confirm('Xóa ảnh này khỏi sản phẩm?')">
+                            <button class="btn btn-small btn-danger" type="submit">Xóa ảnh</button>
+                        </form>
+                    </div>
+                </article>
+            </div>
+        </section>
+    </div>
+</main>
+<footer class="footer">© 2026 FashionStore</footer>
+</body>
+</html>

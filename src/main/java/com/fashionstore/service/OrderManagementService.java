@@ -231,8 +231,6 @@ public class OrderManagementService {
 					throw new OrderException("Kho không đủ hàng để xuất cho sản phẩm \""
 							+ d.getVariant().getProduct().getProductName() + "\"");
 				}
-				inventoryService.recordMovement(vid, actorId, InventoryConstants.TX_EXPORT, d.getQuantity(),
-						"Xuất kho giao đơn " + order.getOrderCode());
 			}
 		}
 		case "RETURNED" -> {

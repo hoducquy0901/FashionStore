@@ -16,15 +16,24 @@
     <!-- Hình ảnh -->
     <div class="detail-gallery">
         <div class="detail-main">
-            <img id="main-img" th:if="${mainImage != null}" th:src="@{${mainImage}}" th:alt="${product.productName}">
-            <span th:if="${mainImage == null}" class="no-img">Chưa có ảnh</span>
+            <img id="main-img" th:src="${mainImage != null ? mainImage : ''}"
+                 th:style="${mainImage == null ? 'display:none' : ''}" th:alt="${product.productName}"
+                 th:attr="data-default-src=${mainImage}">
+            <span id="main-img-empty" th:style="${mainImage != null ? 'display:none' : ''}" class="no-img">Chưa có ảnh</span>
         </div>
-        <div class="thumbs" th:if="${#lists.size(images) > 1}">
-            <img th:each="img, st : ${images}" class="thumb" th:classappend="${st.first} ? 'active'"
+        <div class="thumbs" th:if="${#lists.size(productImages) > 1}">
+            <img th:each="img : ${productImages}" class="thumb"
+                 th:classappend="${img.imageUrl == mainImage} ? 'active'"
                  th:src="@{${img.imageUrl}}" th:attr="data-src=@{${img.imageUrl}}" alt="Ảnh sản phẩm">
         </div>
+        <div id="variant-thumbs" class="thumbs variant-thumbs"
+             th:if="${!#lists.isEmpty(variantImages)}">
+            <img th:each="img : ${variantImages}" class="variant-thumb"
+                 th:src="@{${img.imageUrl}}"
+                 th:attr="data-src=@{${img.imageUrl}},data-variant-id=${img.variantId},data-color=${variantColorById[img.variantId]}"
+                 alt="Ảnh biến thể" loading="lazy">
+        </div>
     </div>
-
     <!-- Thông tin -->
     <div class="detail-info">
         <h1 th:text="${product.productName}">Tên sản phẩm</h1>
@@ -33,8 +42,6 @@
             <span id="price-prefix" th:if="${hasRange}">Từ </span><span id="price"
                   th:text="${#numbers.formatDecimal(minPrice, 1, 'POINT', 0, 'COMMA')} + ' ₫'">0 ₫</span>
         </p>
-        <p class="desc" th:text="${product.description}"></p>
-
         <p th:if="${#lists.isEmpty(variants)}" class="empty">Sản phẩm tạm thời hết hàng.</p>
 
         <form id="add-form" th:action="@{/cart/add}" method="post" th:unless="${#lists.isEmpty(variants)}">
@@ -85,6 +92,10 @@
     </div>
 </main>
 
+<section class="container product-description" th:if="${product.description != null and !#strings.isEmpty(#strings.trim(product.description))}">
+    <h2>Mô tả sản phẩm</h2>
+    <p class="desc" th:text="${product.description}"></p>
+</section>
 <footer class="footer">© 2026 FashionStore</footer>
 <script th:src="@{/js/product-detail.js}"></script>
 </body>
