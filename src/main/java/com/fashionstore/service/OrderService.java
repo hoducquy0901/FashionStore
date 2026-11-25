@@ -3,6 +3,7 @@ package com.fashionstore.service;
 import com.fashionstore.DTO.CheckoutForm;
 import com.fashionstore.entity.*;
 import com.fashionstore.exception.OrderException;
+import com.fashionstore.exception.InsufficientStockException;
 import com.fashionstore.repository.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -87,7 +88,7 @@ public class OrderService {
                 throw new OrderException("Sản phẩm \"" + name + "\" đã ngừng bán, vui lòng xóa khỏi giỏ hàng");
             }
             if (inventoryRepository.reserve(v.getVariantId(), it.getQuantity()) == 0) {
-                throw new OrderException("Sản phẩm \"" + name + "\" không đủ hàng trong kho");
+                throw new InsufficientStockException("Sản phẩm \"" + name + "\" không đủ hàng trong kho");
             }
             total = total.add(it.getLineTotal());
         }

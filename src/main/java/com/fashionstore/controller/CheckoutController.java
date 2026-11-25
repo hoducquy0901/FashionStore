@@ -6,6 +6,7 @@ import com.fashionstore.entity.CartItem;
 import com.fashionstore.entity.Orders;
 import com.fashionstore.entity.User;
 import com.fashionstore.exception.OrderException;
+import com.fashionstore.exception.InsufficientStockException;
 import com.fashionstore.service.CartService;
 import com.fashionstore.service.OrderService;
 import java.math.BigDecimal;
@@ -61,6 +62,10 @@ public class CheckoutController {
 				}
 				redirect.addFlashAttribute("orderMessage", "Đặt hàng thành công! Mã đơn hàng: " + order.getOrderCode());
 				return "redirect:/orders/" + order.getOrderCode();
+			} catch (InsufficientStockException e) {
+				redirect.addFlashAttribute("cartError", e.getMessage()
+						+ ". Hãy giảm số lượng hoặc xóa sản phẩm khỏi giỏ hàng trước khi thanh toán lại.");
+				return "redirect:/cart";
 			} catch (OrderException e) {
 				model.addAttribute("orderError", e.getMessage());
 			}
