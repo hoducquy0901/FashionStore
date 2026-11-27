@@ -125,7 +125,7 @@
 					th:text="${#numbers.formatDecimal(order.finalAmount, 1, 'POINT', 0, 'COMMA')} + ' ₫'"></span>
 			</div>
 		</div>
-		<div class="box" th:if="${order.orderStatus == 'PENDING'}">
+		<div class="box" th:if="${order.orderStatus == 'PENDING' or (order.orderStatus == 'CONFIRMED' and payment != null and payment.paymentMethod == 'COD' and payment.paymentStatus == 'PENDING')}">
 			<form th:action="@{/orders/{code}/cancel(code=${order.orderCode})}"
 				method="post"
 				onsubmit="return confirm('Bạn chắc chắn muốn hủy đơn hàng này?')"
@@ -134,7 +134,7 @@
 					placeholder="Lý do hủy (không bắt buộc)">
 				<button type="submit" class="btn btn-danger">Hủy đơn hàng</button>
 			</form>
-			<small>Chỉ hủy được khi đơn đang chờ xác nhận.</small>
+			<small>Có thể hủy khi đơn chờ xác nhận hoặc COD chưa bắt đầu đóng hàng.</small>
 		</div>
 		<p style="margin-top: 20px">
 			<a th:href="@{/orders}" class="btn btn-outline">← Danh sách đơn

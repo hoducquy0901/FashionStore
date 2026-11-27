@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Đóng hàng - FashionStore</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/packing.css}">
+</head>
+<body>
+<header th:replace="~{fragments/header :: navbar}"></header>
+<div th:replace="~{fragments/admin-nav :: nav('packing')}"></div>
+
+<main class="container packing-page">
+    <h2 class="section-title">Đóng hàng</h2>
+
+    <form class="packing-scan-form" th:action="@{/admin/packing/scan}" method="post">
+        <label for="packing-sku">Quét hoặc nhập mã SKU</label>
+        <div class="packing-scan-control">
+            <input id="packing-sku" type="text" name="sku" autocomplete="off" autofocus
+                   placeholder="Đặt con trỏ tại đây rồi quét mã vạch" required>
+            <button class="btn" type="submit">Xác nhận mã</button>
+        </div>
+        <small>Nhấn Enter sau khi nhập mã. Mã được đối chiếu với đơn đang xử lý đầu tiên.</small>
+    </form>
+
+    <div class="flash flash-ok" th:if="${packingMessage}" th:text="${packingMessage}"></div>
+    <div class="flash flash-err" th:if="${packingError}" th:text="${packingError}"></div>
+    <p class="empty" th:if="${#lists.isEmpty(packingOrders)}">Không có đơn đã xác nhận thanh toán đang chờ đóng hàng.</p>
+
+    <section class="packing-queue" th:each="packingOrder, iter : ${packingOrders}">
+        <details class="packing-order" th:open="${iter.index == 0}"
+                 th:classappend="${iter.index == 0} ? ' packing-order-current'">
+            <summary>
+                <span class="packing-order-title">
+                    <strong th:text="${packingOrder.order.orderCode}">FS...</strong>
+                    <span class="tag" th:text="${paymentMethodLabels.get(packingOrder.payment.paymentMethod)}">Phương thức</span>
+                </span>
+                <span class="packing-paid-at">Vào hàng chờ lúc
+                    <b th:text="${packingOrder.queueAtText}">01/01/2026 10:00</b>
+                </span>
+            </summary>
+
+            <div class="packing-order-body">
+                <p class="packing-total">Tổng tiền:
+                    <strong th:text="${#numbers.formatDecimal(packingOrder.order.finalAmount, 1, 'POINT', 0, 'COMMA')} + ' ₫'">0 ₫</strong>
+                </p>
+                <div class="table-wrap">
+                    <table class="cart-table packing-lines">
+                        <thead><tr><th>Sản phẩm</th><th>SKU</th><th>Phân loại</th><th>Đã quét / cần lấy</th></tr></thead>
+                        <tbody>
+                        <tr th:each="line : ${packingOrder.lines}">
+                            <td th:text="${line.productName}">Sản phẩm</td>
+                            <td><code th:text="${line.sku}">SKU</code></td>
+                            <td th:text="${line.options}">Màu / size</td>
+                            <td><strong th:text="${line.scannedQuantity + ' / ' + line.targetQuantity}">0 / 1</strong></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <form th:action="@{/admin/packing/orders/{code}/skip(code=${packingOrder.order.orderCode})}"
+                      method="post" class="packing-skip-form"
+                      onsubmit="return confirm('Chuyển đơn này sang trạng thái Đang xử lý lỗi?');">
+                    <button type="submit" class="btn btn-outline">Bỏ qua đơn, báo lỗi nghiệp vụ</button>
+                </form>
+            </div>
+        </details>
+    </section>
+</main>
+
+<footer class="footer">© 2026 FashionStore</footer>
+<script th:src="@{/js/admin.js}"></script>
+<script>
+    const packingSkuInput = document.getElementById('packing-sku');
+    if (packingSkuInput) {
+        packingSkuInput.focus();
+        packingSkuInput.select();
+    }
+</script>
+</body>
+</html>

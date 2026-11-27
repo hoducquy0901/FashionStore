@@ -99,7 +99,8 @@ public class OrderService {
         order.setUserId(userId);
         order.setAddressId(address.getAddressId());
         order.setOrderCode(generateCode());
-        order.setOrderStatus("PENDING");
+        boolean codOrder = "COD".equalsIgnoreCase(form.getPaymentMethod());
+        order.setOrderStatus(codOrder ? "CONFIRMED" : "PENDING");
         order.setTotalAmount(total);
         order.setShippingFee(fee);
         order.setFinalAmount(total.add(fee));
@@ -121,9 +122,10 @@ public class OrderService {
         OrderStatusHistory h = new OrderStatusHistory();
         h.setOrderId(order.getOrderId());
         h.setUpdateBy(userId);
-        h.setStatus("PENDING");
+        h.setStatus(codOrder ? "CONFIRMED" : "PENDING");
         String note = form.getNote() == null ? "" : form.getNote().trim();
-        h.setNote(note.isEmpty() ? "Khách đặt hàng" : "Khách đặt hàng: " + cut(note, 200));
+        String orderNote = codOrder ? "Khách đặt đơn COD, tự động xác nhận" : "Khách đặt hàng";
+        h.setNote(note.isEmpty() ? orderNote : orderNote + ": " + cut(note, 200));
         historyRepository.save(h);
 
         // Thanh toán

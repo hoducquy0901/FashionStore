@@ -1,5 +1,10 @@
 # FashionStore
 
+## Quy tắc bắt buộc khi thay đổi dự án
+
+- Không tự ý sửa cấu trúc entity hoặc ERD của dự án. Không thêm, xóa, đổi tên entity, field, quan hệ, bảng, cột, khóa hay ràng buộc dữ liệu khi chưa được người dùng yêu cầu rõ ràng.
+- Nếu một tính năng cần thay đổi cấu trúc entity hoặc ERD, hãy dừng phần phụ thuộc vào thay đổi đó và hỏi người dùng trước khi thực hiện. Ưu tiên thiết kế tính năng bằng cấu trúc hiện có khi phù hợp.
+
 Website bán thời trang xây dựng bằng Spring Boot: khách hàng xem sản phẩm, thêm giỏ hàng, đặt hàng và thanh toán (COD, chuyển khoản, VNPay); quản trị viên quản lý sản phẩm, danh mục, đơn hàng, nhập hàng và tồn kho.
 
 > Tài liệu này được soạn từ phần code đã phát triển cùng nhau. Một số chi tiết phụ thuộc vào database thực tế của bạn (tên cột, giá trị ràng buộc CHECK). Những chỗ đó được đánh dấu **(đối chiếu)**, hãy kiểm tra lại với project của bạn trước khi nộp hoặc công bố.

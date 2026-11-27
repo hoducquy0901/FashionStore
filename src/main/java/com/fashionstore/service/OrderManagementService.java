@@ -37,9 +37,9 @@ public class OrderManagementService {
 	public static final int UNPAID_EXPIRY_MINUTES = 30;
 
 	private static final Map<String, List<String>> TRANSITIONS = Map.of("PENDING", List.of("CONFIRMED", "CANCELLED"),
-			"CONFIRMED", List.of("PREPARING", "CANCELLED"), "PREPARING", List.of("SHIPPING", "CANCELLED"), "SHIPPING",
+			"CONFIRMED", List.of("PREPARING", "CANCELLED", "TROUBLESHOOTING"), "PREPARING", List.of("SHIPPING", "CANCELLED"), "SHIPPING",
 			List.of("COMPLETED", "RETURNED"), "COMPLETED", List.of("RETURNED"), "CANCELLED", List.of(), "RETURNED",
-			List.of());
+			List.of(), "TROUBLESHOOTING", List.of());
 
 	private final OrdersRepository orderRepository;
 	private final OrderDetailRepository orderDetailRepository;
@@ -166,8 +166,14 @@ public class OrderManagementService {
 		if (!userId.equals(order.getUserId())) {
 			throw new OrderException("Không tìm thấy đơn hàng");
 		}
-		if (!"PENDING".equals(order.getOrderStatus())) {
-			throw new OrderException("Chỉ hủy được đơn đang chờ xác nhận. Vui lòng liên hệ cửa hàng để được hỗ trợ.");
+		boolean canCancel = "PENDING".equals(order.getOrderStatus());
+		if ("CONFIRMED".equals(order.getOrderStatus())) {
+			Payment payment = paymentRepository.findTopByOrderIdOrderByPaymentIdDesc(order.getOrderId()).orElse(null);
+			canCancel = payment != null && "COD".equals(payment.getPaymentMethod())
+					&& "PENDING".equals(payment.getPaymentStatus());
+		}
+		if (!canCancel) {
+			throw new OrderException("Chỉ hủy được đơn đang chờ xác nhận hoặc đơn COD chưa đóng hàng. Vui lòng liên hệ cửa hàng để được hỗ trợ.");
 		}
 		applyStatusChange(order, "CANCELLED", userId, noteOf("Khách hủy đơn", reason));
 	}
@@ -208,6 +214,15 @@ public class OrderManagementService {
 			throw new OrderException(
 					"Không thể chuyển đơn từ \"" + OrderLabels.ORDER_STATUS.getOrDefault(current, current)
 							+ "\" sang \"" + OrderLabels.ORDER_STATUS.getOrDefault(newStatus, newStatus) + "\"");
+		}
+		if ("TROUBLESHOOTING".equals(newStatus)) {
+			Payment latestPayment = paymentRepository.findTopByOrderIdOrderByPaymentIdDesc(order.getOrderId())
+					.orElseThrow(() -> new OrderException("Đơn hàng chưa có thông tin thanh toán"));
+			if (!"SUCCESS".equals(latestPayment.getPaymentStatus())
+					&& !("COD".equals(latestPayment.getPaymentMethod())
+							&& "PENDING".equals(latestPayment.getPaymentStatus()))) {
+				throw new OrderException("Chỉ báo lỗi cho đơn đã xác nhận thanh toán");
+			}
 		}
 
 		List<OrderDetail> details = orderDetailRepository.findDetailedByOrderId(order.getOrderId());

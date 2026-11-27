@@ -848,6 +848,14 @@ a {
 	border-radius: 6px;
 }
 
+.search-form select {
+	min-width: 190px;
+	padding: 9px 12px;
+	border: 1px solid #ccc;
+	border-radius: 6px;
+	background: #fff;
+}
+
 .pager {
 	display: flex;
 	gap: 6px;
@@ -974,6 +982,11 @@ a {
 .st-RETURNED {
 	background: #e0e0e0;
 	color: #333;
+}
+
+.st-TROUBLESHOOTING {
+	background: #ffe0b2;
+	color: #7a3e00;
 }
 
 @media ( max-width : 800px) {

@@ -16,17 +16,14 @@
 <main class="container">
     <h2 class="section-title">Quản lý đơn hàng</h2>
 
-    <div class="filter-tabs">
-        <a th:href="@{/admin/orders(keyword=${keyword})}" th:classappend="${status == ''} ? 'active'">Tất cả</a>
-        <a th:each="s : ${orderStatusLabels}"
-           th:href="@{/admin/orders(status=${s.key},keyword=${keyword})}"
-           th:text="${s.value}" th:classappend="${status == s.key} ? 'active'"></a>
-    </div>
-
     <form th:action="@{/admin/orders}" method="get" class="search-form">
-        <input type="hidden" name="status" th:value="${status}">
+        <select name="status" aria-label="Lọc theo trạng thái">
+            <option value="" th:selected="${status == ''}">Tất cả trạng thái</option>
+            <option th:each="s : ${orderStatusLabels}" th:value="${s.key}"
+                    th:text="${s.value}" th:selected="${status == s.key}"></option>
+        </select>
         <input type="text" name="keyword" th:value="${keyword}" placeholder="Tìm theo mã đơn hàng">
-        <button type="submit" class="btn">Tìm</button>
+        <button type="submit" class="btn">Lọc đơn hàng</button>
     </form>
 
     <p th:if="${#lists.isEmpty(orders)}" class="empty">Không có đơn hàng nào.</p>

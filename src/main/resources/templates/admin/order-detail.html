@@ -93,24 +93,6 @@
 
     <div class="admin-grid" style="margin-top:20px">
         <section class="box">
-            <h3>Cập nhật trạng thái</h3>
-            <p th:if="${#lists.isEmpty(nextStatuses)}" class="empty">Đơn hàng đã kết thúc, không thể đổi trạng thái.</p>
-            <form th:unless="${#lists.isEmpty(nextStatuses)}"
-                  th:action="@{/admin/orders/{code}/status(code=${order.orderCode})}" method="post">
-                <input type="text" name="note" maxlength="150" class="note-input" placeholder="Ghi chú (không bắt buộc)">
-                <div class="action-buttons">
-                    <button type="submit" name="newStatus" class="btn"
-                            th:each="s : ${nextStatuses}" th:value="${s}"
-                            th:text="${s == 'CANCELLED'} ? 'Hủy đơn' : (${s == 'RETURNED'} ? 'Ghi nhận trả hàng' : ${orderStatusLabels.get(s)})"
-                            th:classappend="${s == 'CANCELLED' or s == 'RETURNED'} ? 'btn-danger'"
-                            th:attr="data-confirm=${s == 'CANCELLED'} ? 'Hủy đơn này và trả hàng giữ chỗ về kho?' : (${s == 'RETURNED'} ? 'Xác nhận hàng đã được trả về kho?' : '')">
-                    </button>
-                </div>
-                <small>Chuyển sang "Đang giao" sẽ trừ tồn kho thật. Hủy đơn trả lại phần hàng giữ chỗ.</small>
-            </form>
-        </section>
-
-        <section class="box">
             <h3>Lịch sử đơn hàng</h3>
             <ul class="timeline">
                 <li th:each="h : ${history}">

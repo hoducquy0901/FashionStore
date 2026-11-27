@@ -21,6 +21,7 @@ public final class OrderLabels {
         s.put("COMPLETED", "Hoàn thành");
         s.put("CANCELLED", "Đã hủy");
         s.put("RETURNED", "Đã trả hàng");
+        s.put("TROUBLESHOOTING", "Đang xử lý lỗi");
         ORDER_STATUS = Collections.unmodifiableMap(s);
 
         Map<String, String> m = new LinkedHashMap<>();

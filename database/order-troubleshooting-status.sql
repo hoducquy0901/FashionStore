@@ -1,0 +1,12 @@
+IF EXISTS (
+    SELECT 1 FROM sys.check_constraints
+    WHERE name = N'CK_ORDER_Status' AND parent_object_id = OBJECT_ID(N'dbo.[ORDER]')
+)
+    ALTER TABLE dbo.[ORDER] DROP CONSTRAINT CK_ORDER_Status;
+GO
+
+ALTER TABLE dbo.[ORDER] WITH CHECK ADD CONSTRAINT CK_ORDER_Status CHECK (
+    [OrderStatus] IN ('PENDING', 'CONFIRMED', 'PREPARING', 'SHIPPING', 'COMPLETED',
+                      'CANCELLED', 'RETURNED', 'TROUBLESHOOTING')
+);
+GO

@@ -15,6 +15,14 @@ import java.util.Optional;
 public interface OrdersRepository extends JpaRepository<Orders, Integer> {
 
     Optional<Orders> findByOrderCode(String orderCode);
+
+    @Query("select o from Orders o, Payment p where o.orderId = p.orderId "
+         + "and o.orderStatus = 'CONFIRMED' and (p.paymentStatus = 'SUCCESS' "
+         + "or (p.paymentMethod = 'COD' and p.paymentStatus = 'PENDING')) "
+         + "and p.paymentId = (select max(p2.paymentId) from Payment p2 where p2.orderId = o.orderId) "
+         + "and (p.paymentMethod = 'COD' or p.paidAt is not null)")
+    List<Orders> findOrdersReadyForPacking();
+
     boolean existsByOrderCode(String orderCode);
     List<Orders> findByUserIdOrderByOrderIdDesc(Integer userId);
 

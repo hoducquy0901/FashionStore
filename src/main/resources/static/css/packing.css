@@ -1,0 +1,25 @@
+.packing-page { max-width: 1100px; }
+.packing-scan-form { background: #fff; border: 1px solid #dedede; border-radius: 10px; padding: 20px; margin: 18px 0 22px; }
+.packing-scan-form label { display: block; font-weight: 700; margin-bottom: 9px; }
+.packing-scan-control { display: flex; gap: 10px; }
+.packing-scan-control input { flex: 1; min-width: 0; font-size: 1.15rem; padding: 12px; border: 1px solid #aaa; border-radius: 6px; }
+.packing-scan-form small { display: block; color: #666; margin-top: 8px; }
+.packing-queue { display: grid; gap: 12px; }
+.packing-order { border: 1px solid #ddd; border-radius: 9px; background: #fff; overflow: hidden; }
+.packing-order summary { cursor: pointer; padding: 15px 18px; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.packing-order-title { display: flex; align-items: center; gap: 10px; }
+.packing-order-title strong { font-size: 1.08rem; }
+.packing-paid-at { color: #555; }
+.packing-order-current { border: 2px solid #304f88; box-shadow: 0 3px 12px #00000012; }
+.packing-order-current summary { background: #f1f5fc; }
+.packing-order-current .packing-order-title strong { font-size: 1.28rem; }
+.packing-order-body { padding: 0 18px 18px; }
+.packing-total { margin: 4px 0 12px; }
+.packing-lines td, .packing-lines th { padding: 11px 9px; }
+.packing-skip-form { display: flex; justify-content: flex-end; margin-top: 14px; }
+@media (max-width: 650px) {
+    .packing-scan-control, .packing-order summary { flex-direction: column; align-items: stretch; }
+    .packing-scan-control button { width: 100%; }
+    .packing-order-title { flex-wrap: wrap; }
+    .packing-lines { min-width: 600px; }
+}
