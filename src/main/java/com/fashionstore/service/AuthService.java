@@ -1,6 +1,6 @@
 package com.fashionstore.service;
 
-import com.fashionstore.DTO.RegisterRequest;
+import com.fashionstore.dto.RegisterRequest;
 import com.fashionstore.entity.Role;
 import com.fashionstore.entity.User;
 import com.fashionstore.exception.EmailAlreadyExistsException;

@@ -1,4 +1,4 @@
-package com.fashionstore.DTO;
+package com.fashionstore.dto;
 
 import jakarta.validation.constraints.*;
 

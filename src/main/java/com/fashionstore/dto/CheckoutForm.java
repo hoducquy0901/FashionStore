@@ -1,4 +1,4 @@
-package com.fashionstore.DTO;
+package com.fashionstore.dto;
 
 import lombok.Getter;
 import lombok.Setter;

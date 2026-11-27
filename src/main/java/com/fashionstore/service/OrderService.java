@@ -1,6 +1,6 @@
 package com.fashionstore.service;
 
-import com.fashionstore.DTO.CheckoutForm;
+import com.fashionstore.dto.CheckoutForm;
 import com.fashionstore.entity.*;
 import com.fashionstore.exception.OrderException;
 import com.fashionstore.exception.InsufficientStockException;

@@ -1,6 +1,6 @@
 package com.fashionstore.controller;
 
-import com.fashionstore.DTO.CheckoutForm;
+import com.fashionstore.dto.CheckoutForm;
 import com.fashionstore.entity.Address;
 import com.fashionstore.entity.CartItem;
 import com.fashionstore.entity.Orders;

@@ -1,6 +1,6 @@
 package com.fashionstore.controller;
 
-import com.fashionstore.DTO.RegisterRequest;
+import com.fashionstore.dto.RegisterRequest;
 import com.fashionstore.exception.EmailAlreadyExistsException;
 import com.fashionstore.service.AuthService;
 import jakarta.validation.Valid;
